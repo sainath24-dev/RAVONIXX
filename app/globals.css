@@ -1,0 +1,189 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Purple, Black, and White Palette */
+  --bg-dark-primary: #08090C;      /* Deep obsidian black page background */
+  --bg-dark-secondary: #10121A;    /* Card & container background */
+  --bg-dark-card-hover: #171A26;   /* Card hover state */
+  
+  --brand-purple: #A855F7;         /* Primary Purple CTA & active states */
+  --brand-purple-hover: #9333EA;   /* Purple hover state */
+  --brand-purple-hi: #C084FC;      /* Lavender / Purple Highlight */
+  --brand-purple-glow: rgba(168, 85, 247, 0.35);
+
+  --brand-danger-red: #FF0055;     /* Alerts & danger states */
+  --brand-cyber-cyan: #00F0FF;     /* Secondary tech cyan accents */
+
+  --text-white: #FFFFFF;           /* Primary headers & main titles */
+  --text-muted: #A3A8B8;           /* Secondary text, stats, captions */
+  --text-subtle: #52586B;          /* Decorative background strokes */
+  
+  --border-overlay: rgba(168, 85, 247, 0.15);
+  --glass-overlay: rgba(8, 9, 12, 0.82);
+
+  /* Legacy Mappings to keep all components in sync */
+  --bg-void: var(--bg-dark-primary);
+  --bg-panel: var(--bg-dark-secondary);
+  --bg-panel-raised: var(--bg-dark-card-hover);
+  --border-hairline: var(--border-overlay);
+
+  --accent-primary: var(--brand-purple);
+  --accent-primary-hi: var(--brand-purple-hi);
+  --accent-live: var(--brand-danger-red);
+  --accent-info: var(--brand-cyber-cyan);
+
+  --tier-bronze: #8C6A3F;
+  --tier-silver: #B8BCC4;
+  --tier-gold: #F2C14E;
+  --tier-diamond: #C084FC;
+
+  --text-primary: var(--text-white);
+  --text-muted: var(--text-muted);
+  --text-dim: var(--text-subtle);
+}
+
+html, body {
+  background-color: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-body), sans-serif;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+
+  /* Micro-grid overlay with subtle purple tint */
+  background-image: 
+    linear-gradient(rgba(168, 85, 247, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 85, 247, 0.02) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Typography styles */
+h1, h2, h3, h4, h5, h6, .display-font {
+  font-family: var(--font-display), sans-serif;
+  text-transform: uppercase;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  font-weight: 900;
+}
+
+/* Custom design system utilities */
+.text-outline {
+  -webkit-text-stroke: 1px rgba(168, 85, 247, 0.25);
+  color: transparent;
+}
+
+.slanted {
+  transform: skewX(-12deg);
+  display: inline-block;
+}
+
+/* Clip card polygon styles */
+.clip-card {
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+}
+
+.clip-card-sm {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+
+/* Custom CSS noise and scanline overlays */
+.noise-overlay {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAA5ztcXZAAAAFkEXHRkQ3JlYXRpb24gVGltZQAyNy8wNi8xOJK7d3IAAAALVExURQAAAAAAAO7u7rKysvLy8t3d3fb29vT09P7+/v39/fPz8/Hx8e/v7+3t7erq6unp6efn5+Xl5ePj4+Hh4eHj49oV1jAAAAAnRSTlMAAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnJyooKywt7gH1AAAAn0lEQVRIx43PuxHAMAwDQUXuv8/24V3BBSwMvGkQ1Lh4V2V954/3H3x7c+/tZ1X2Zz/vP/h2XfXtfN5/8O1lVfY3e59lVfax1/XtfFZlVfZnP+8/+HZd9Z1/q7KPVdmffV5WZR/rvKzKPtZ5WZV9rPOyKvtY52VV9rHOy6rsY52XVdnHOi+rso91XlZlH+u8rMo+1nlZlX2s87Iq+1jnZV/rL+9yAQ0P0s2jAAAAAElFTkSuQmCC");
+  opacity: 0.035;
+  pointer-events: none;
+}
+
+.scanlines-overlay {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(168, 85, 247, 0.03),
+    rgba(168, 85, 247, 0.03) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  pointer-events: none;
+}
+
+/* CSS Marquee */
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Lenis Custom Smooth Scroll */
+html.lenis {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overflow: clip;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Custom Purple Neon Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #08090C;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.35);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.75);
+}
+
+/* Cyberpunk Hologram Scan animations */
+@keyframes hologram-scan {
+  0% {
+    top: 0%;
+  }
+  50% {
+    top: 100%;
+  }
+  100% {
+    top: 0%;
+  }
+}
+
+.animate-scan {
+  animation: hologram-scan 4s linear infinite;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
