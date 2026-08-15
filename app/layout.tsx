@@ -70,6 +70,9 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    google: "1oHAWBlA1YYNJTDj6AfI0kRi_EeyNSJvOc1mPpEkSSI",
+  },
   icons: {
     icon: [
       { url: "/images/logo/ravonixx_dark.png", sizes: "any" },
@@ -141,6 +144,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <head>
+        <meta name="google-site-verification" content="1oHAWBlA1YYNJTDj6AfI0kRi_EeyNSJvOc1mPpEkSSI" />
         <link rel="icon" href="/images/logo/ravonixx_dark.png" sizes="any" />
         <link rel="apple-touch-icon" href="/images/logo/ravonixx_dark.png" />
         <script
