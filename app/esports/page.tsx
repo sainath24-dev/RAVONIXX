@@ -5,8 +5,6 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Search, Film } from "lucide-react";
 
-const API_KEY = "AIzaSyCutC_5VK-y8YFU-nKBkEHKPIOr9pwkEMk";
-
 const DEFAULT_VIDEOS = [
   {
     id: "F07S9rY1-oU",
@@ -91,8 +89,7 @@ export default function EsportsPage() {
     setErrorText("");
 
     try {
-      const formattedQuery = `Free Fire Esports ${queryText.trim()}`;
-      const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(formattedQuery)}&maxResults=8&type=video&videoEmbeddable=true&key=${API_KEY}`;
+      const url = `/api/youtube?q=${encodeURIComponent(queryText.trim())}`;
       
       const res = await fetch(url);
       if (!res.ok) {

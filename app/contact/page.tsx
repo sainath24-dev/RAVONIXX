@@ -10,8 +10,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, Send, ChevronDown, Check, User, Globe, FileText, ArrowRight, ArrowLeft, Mail, ExternalLink, ShieldCheck } from "lucide-react";
 import { fadeUp } from "@/lib/motion";
 
-const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1538130672835629076/A4YaYtDR8pB35OB7sS8r_WwL9F5VMn-xKr54ku3vGlPlpJI8az5n_7AbqhPdHoBIzq2a";
-
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   ign: z.string().min(2, "IGN must be at least 2 characters"),
@@ -83,47 +81,19 @@ export default function ContactPage() {
     setFormStatus("submitting");
 
     try {
-      // Dispatch formatted embed to Discord Webhook
-      const payload = {
-        username: "RAVONIXX Operator Dispatch",
-        embeds: [
-          {
-            title: "🎯 New Player / Scrim Dossier Registration",
-            description: `A new registration has been received on **ravonixx.xyz**.`,
-            color: 11026687, // Purple accent (#A855F7)
-            fields: [
-              { name: "👤 Real Name", value: data.name || "N/A", inline: true },
-              { name: "🎮 Free Fire IGN", value: `\`${data.ign}\``, inline: true },
-              { name: "🆔 Free Fire UID", value: `\`${data.uid}\``, inline: true },
-              { name: "📱 Discord Tag", value: `\`${data.discord}\``, inline: true },
-              { name: "📧 Email", value: data.email || "N/A", inline: true },
-              { name: "🌍 Server Region", value: data.region || "N/A", inline: true },
-              { name: "🏆 Division Tier", value: data.tier || "N/A", inline: true },
-              { name: "💬 Message / Scrim Inquiry", value: data.message || "None", inline: false },
-              { name: "📜 Terms & Conditions", value: "✅ Agreed to RAVONIXX Code of Conduct & Policies", inline: false }
-            ],
-            footer: {
-              text: "RAVONIXX Esports & Consultancy • ravonixx.xyz"
-            },
-            timestamp: new Date().toISOString()
-          }
-        ]
-      };
-
-      const response = await fetch(DISCORD_WEBHOOK_URL, {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
-        throw new Error("Webhook dispatch failed");
+        throw new Error("Submission failed");
       }
 
       setFormStatus("success");
       reset();
     } catch {
-      // Still acknowledge user success while logging
       setFormStatus("success");
       reset();
     }
