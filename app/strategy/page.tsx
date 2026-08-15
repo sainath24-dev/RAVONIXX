@@ -108,6 +108,8 @@ export default function StrategyPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const pointersRef = useRef<Map<number, { x: number; y: number }>>(new Map());
+  const pinchStartRef = useRef<{ distance: number; zoom: number; midpoint: { x: number; y: number }; pan: { x: number; y: number } } | null>(null);
 
   useEffect(() => {
     try {
@@ -262,9 +264,33 @@ export default function StrategyPage() {
     redrawCanvas();
   }, [redrawCanvas, selectedMapId]);
 
-  // Mouse Handlers
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+  // Pointer & Touch Handlers (Universal Touch + Mouse + Stylus)
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
+
+    pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    // Multi-touch Pinch to Zoom & Pan Detection (2 fingers)
+    if (pointersRef.current.size === 2) {
+      setIsDrawing(false);
+      setCurrentDrawPoints([]);
+      setIsPanning(false);
+
+      const pts = Array.from(pointersRef.current.values());
+      const distance = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      const midpoint = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
+      pinchStartRef.current = { distance, zoom, midpoint, pan };
+      return;
+    }
+
+    if (pointersRef.current.size > 2) return;
+
+    // Single touch / mouse click
     const rect = containerRef.current.getBoundingClientRect();
 
     if (activeTool === "pan") {
@@ -275,15 +301,15 @@ export default function StrategyPage() {
 
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
-    const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
+    const x = Math.max(0, Math.min(canvas.width, ((e.clientX - rect.left) / rect.width) * canvas.width));
+    const y = Math.max(0, Math.min(canvas.height, ((e.clientY - rect.top) / rect.height) * canvas.height));
 
     if (["pencil", "arrow", "line", "circle"].includes(activeTool)) {
       setIsDrawing(true);
       setCurrentDrawPoints([{ x, y }]);
     } else if (activeTool === "marker") {
-      const mx = ((e.clientX - rect.left) / rect.width) * 100;
-      const my = ((e.clientY - rect.top) / rect.height) * 100;
+      const mx = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+      const my = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
       const markerId = Math.random().toString(36).substring(2, 9);
       const newMarker: TacticalMarker = {
         id: markerId,
@@ -299,9 +325,32 @@ export default function StrategyPage() {
     }
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
+    if (!pointersRef.current.has(e.pointerId)) return;
+
+    pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    // Handle two-finger pinch-to-zoom & two-finger pan on phone
+    if (pointersRef.current.size === 2 && pinchStartRef.current) {
+      const pts = Array.from(pointersRef.current.values());
+      const currentDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      const currentMid = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
+
+      if (pinchStartRef.current.distance > 0) {
+        const scaleChange = currentDist / pinchStartRef.current.distance;
+        const newZoom = Math.max(1, Math.min(3.5, pinchStartRef.current.zoom * scaleChange));
+        setZoom(newZoom);
+      }
+
+      const dx = currentMid.x - pinchStartRef.current.midpoint.x;
+      const dy = currentMid.y - pinchStartRef.current.midpoint.y;
+      setPan({
+        x: pinchStartRef.current.pan.x + dx,
+        y: pinchStartRef.current.pan.y + dy
+      });
+      return;
+    }
 
     if (isPanning && activeTool === "pan") {
       setPan({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
@@ -309,21 +358,36 @@ export default function StrategyPage() {
     }
 
     if (isDrawing && ["pencil", "arrow", "line", "circle"].includes(activeTool)) {
+      const rect = containerRef.current.getBoundingClientRect();
       const canvas = canvasRef.current;
       if (!canvas) return;
 
-      const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
-      const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
+      const x = Math.max(0, Math.min(canvas.width, ((e.clientX - rect.left) / rect.width) * canvas.width));
+      const y = Math.max(0, Math.min(canvas.height, ((e.clientY - rect.top) / rect.height) * canvas.height));
 
       if (activeTool === "pencil") {
         setCurrentDrawPoints(prev => [...prev, { x, y }]);
       } else {
-        setCurrentDrawPoints(prev => [prev[0], { x, y }]);
+        setCurrentDrawPoints(prev => (prev.length > 0 ? [prev[0], { x, y }] : [{ x, y }]));
       }
     }
   };
 
-  const handleMouseUp = () => {
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {
+        // ignore
+      }
+    }
+
+    pointersRef.current.delete(e.pointerId);
+
+    if (pointersRef.current.size < 2) {
+      pinchStartRef.current = null;
+    }
+
     if (isPanning) setIsPanning(false);
 
     if (isDrawing) {
@@ -580,8 +644,8 @@ export default function StrategyPage() {
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full items-start">
         
-        {/* Left Controls (4 cols) */}
-        <div className="lg:col-span-4 flex flex-col gap-4 w-full">
+        {/* Left Controls (4 cols on desktop, order-2 on mobile) */}
+        <div className="order-2 lg:order-1 lg:col-span-4 flex flex-col gap-4 w-full">
           
           {/* Tab Navigation */}
           <div className="grid grid-cols-3 bg-panel border border-hairline p-1 rounded">
@@ -888,29 +952,32 @@ export default function StrategyPage() {
 
         </div>
 
-        {/* Right Blackboard Viewport (8 cols) */}
-        <div className="lg:col-span-8 flex flex-col gap-2 relative">
+        {/* Right Blackboard Viewport (8 cols on desktop, order-1 on mobile) */}
+        <div className="order-1 lg:order-2 lg:col-span-8 flex flex-col gap-2 relative w-full">
           
           {/* Zoom Toolbar */}
           <div className="flex items-center justify-between bg-panel border border-hairline px-3 py-2 rounded text-xs select-none">
-            <span className="font-display font-bold text-text-primary uppercase tracking-wider text-[10px]">
-              Role: {activeRole.name}
-            </span>
+            <div className="flex items-center gap-2">
+              <div style={{ backgroundColor: activeRole.color }} className="w-2.5 h-2.5 rounded-full" />
+              <span className="font-display font-bold text-text-primary uppercase tracking-wider text-[10px]">
+                {activeRole.name} • <span className="text-primary">{activeTool.toUpperCase()}</span>
+              </span>
+            </div>
             <div className="flex items-center gap-1.5">
-              <button onClick={() => setZoom(z => Math.min(z + 0.3, 3.5))} className="p-1 border border-hairline rounded hover:border-primary" title="Zoom In">
+              <button onClick={() => setZoom(z => Math.min(z + 0.3, 3.5))} className="p-1.5 border border-hairline rounded hover:border-primary text-text-muted hover:text-white" title="Zoom In">
                 <ZoomIn className="w-3.5 h-3.5" />
               </button>
-              <button onClick={() => setZoom(z => Math.max(z - 0.3, 1))} className="p-1 border border-hairline rounded hover:border-primary" title="Zoom Out">
+              <button onClick={() => setZoom(z => Math.max(z - 0.3, 1))} className="p-1.5 border border-hairline rounded hover:border-primary text-text-muted hover:text-white" title="Zoom Out">
                 <ZoomOut className="w-3.5 h-3.5" />
               </button>
-              <button onClick={handleResetZoom} className="p-1 border border-hairline rounded hover:border-primary" title="Reset View">
+              <button onClick={handleResetZoom} className="p-1.5 border border-hairline rounded hover:border-primary text-text-muted hover:text-white" title="Reset View">
                 <RotateCcw className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
 
-          {/* Map Viewport Canvas Container */}
-          <div className="relative aspect-square w-full bg-black border border-hairline overflow-hidden rounded select-none">
+          {/* Map Viewport Canvas Container with Touch Support */}
+          <div className="relative aspect-square w-full bg-black border border-hairline overflow-hidden rounded select-none touch-none shadow-2xl">
             
             {/* Top Coordinate Header (B, C, D, E, F, G, H) */}
             {showCoordinateGrid && (
@@ -936,16 +1003,17 @@ export default function StrategyPage() {
 
             <div
               ref={containerRef}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerUp}
               style={{
                 transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
                 transformOrigin: "center center",
-                cursor: activeTool === "pan" ? (isPanning ? "grabbing" : "grab") : "crosshair"
+                cursor: activeTool === "pan" ? (isPanning ? "grabbing" : "grab") : "crosshair",
+                touchAction: "none"
               }}
-              className="relative w-full h-full select-none"
+              className="relative w-full h-full select-none touch-none"
             >
               {/* Map Image */}
               <div className="absolute inset-0 select-none pointer-events-none">
@@ -1016,8 +1084,73 @@ export default function StrategyPage() {
               {/* Canvas Overlay */}
               <canvas
                 ref={canvasRef}
+                style={{ touchAction: "none" }}
                 className="absolute inset-0 w-full h-full z-[5] pointer-events-none"
               />
+            </div>
+          </div>
+
+          {/* Mobile Quick-Toolbar for Instant Phone Access */}
+          <div className="lg:hidden flex flex-col gap-2 p-2.5 bg-panel border border-hairline rounded-lg shadow-lg">
+            {/* Quick Tools */}
+            <div className="flex items-center justify-between gap-1 overflow-x-auto pb-1">
+              {[
+                { id: "pencil", label: "Draw", icon: Paintbrush },
+                { id: "arrow", label: "Arrow", icon: ArrowRight },
+                { id: "circle", label: "Circle", icon: Circle },
+                { id: "line", label: "Line", icon: Minus },
+                { id: "marker", label: "Pin", icon: MapPin },
+                { id: "pan", label: "Pan", icon: Navigation }
+              ].map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => setActiveTool(t.id as ToolMode)}
+                  className={`flex-1 py-2 px-1.5 border text-[9px] font-display font-black uppercase flex flex-col items-center justify-center gap-1 rounded transition-all min-w-[50px] ${
+                    activeTool === t.id
+                      ? "border-primary bg-primary text-black shadow-[0_0_12px_rgba(168,85,247,0.4)]"
+                      : "border-hairline text-text-muted hover:text-white bg-panel-raised"
+                  }`}
+                >
+                  <t.icon className="w-3.5 h-3.5" />
+                  <span>{t.label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Quick Roles & Undo */}
+            <div className="flex items-center justify-between gap-2 pt-1 border-t border-hairline">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[8px] font-display text-text-muted uppercase">Role:</span>
+                {ROLES.map((r) => (
+                  <button
+                    key={r.id}
+                    onClick={() => setActiveRole(r)}
+                    style={{
+                      backgroundColor: r.color,
+                      boxShadow: activeRole.id === r.id ? `0 0 10px ${r.color}` : "none"
+                    }}
+                    className={`w-6 h-6 rounded-full border-2 transition-transform ${
+                      activeRole.id === r.id ? "border-white scale-110" : "border-transparent opacity-70"
+                    }`}
+                    title={r.name}
+                  />
+                ))}
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={handleUndo}
+                  disabled={history.length === 0}
+                  className="px-2 py-1 bg-panel-raised border border-hairline text-[9px] font-display font-bold uppercase rounded text-text-muted hover:text-white disabled:opacity-30 flex items-center gap-1"
+                >
+                  <Undo className="w-3 h-3" /> Undo
+                </button>
+                <button
+                  onClick={handleClearAll}
+                  className="px-2 py-1 bg-panel-raised border border-hairline text-[9px] font-display font-bold uppercase rounded text-red-400 hover:text-red-300 flex items-center gap-1"
+                >
+                  <Trash2 className="w-3 h-3" /> Clear
+                </button>
+              </div>
             </div>
           </div>
 
