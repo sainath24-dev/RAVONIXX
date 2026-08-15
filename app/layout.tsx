@@ -32,7 +32,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ravonixx.xyz"),
+  metadataBase: new URL("https://www.ravonixx.xyz"),
   title: {
     default: "RAVONIXX | Free Fire Esports & Tactical Playbook",
     template: "%s | RAVONIXX",
@@ -53,11 +53,11 @@ export const metadata: Metadata = {
     "Pro gamer sensitivity",
     "Free Fire tactical playbook",
   ],
-  authors: [{ name: "RAVONIXX Esports", url: "https://ravonixx.xyz" }],
+  authors: [{ name: "RAVONIXX Esports", url: "https://www.ravonixx.xyz" }],
   creator: "RAVONIXX",
   publisher: "RAVONIXX",
   alternates: {
-    canonical: "https://ravonixx.xyz",
+    canonical: "https://www.ravonixx.xyz",
   },
   robots: {
     index: true,

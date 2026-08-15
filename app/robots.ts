@@ -9,8 +9,8 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/"],
       },
     ],
-    sitemap: "https://ravonixx.xyz/sitemap.xml",
-    host: "https://ravonixx.xyz",
+    sitemap: "https://www.ravonixx.xyz/sitemap.xml",
+    host: "https://www.ravonixx.xyz",
   };
 }
 
