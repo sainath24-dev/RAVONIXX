@@ -37,7 +37,39 @@ export const metadata: Metadata = {
     default: "RAVONIXX | Free Fire Esports & Tactical Playbook",
     template: "%s | RAVONIXX",
   },
-  description: "Official hub for RAVONIXX Free Fire esports organization. Discover active player rosters, sensitivities, custom HUD loadouts, map strategies, and broadcasts.",
+  description:
+    "Official website of RAVONIXX Esports organization. Explore pro Free Fire rosters, sensitivities, custom HUD loadouts, map strategies, tournament scrims, and highlights.",
+  keywords: [
+    "RAVONIXX",
+    "RAVONIXX Esports",
+    "Free Fire Esports",
+    "Free Fire India",
+    "Free Fire sensitivity settings",
+    "Free Fire custom HUD",
+    "FFWS",
+    "Free Fire World Series",
+    "Esports organization India",
+    "Free Fire tournament scrims",
+    "Pro gamer sensitivity",
+    "Free Fire tactical playbook",
+  ],
+  authors: [{ name: "RAVONIXX Esports", url: "https://ravonixx.xyz" }],
+  creator: "RAVONIXX",
+  publisher: "RAVONIXX",
+  alternates: {
+    canonical: "https://ravonixx.xyz",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: {
     icon: [
       { url: "/images/logo/ravonixx_dark.png", sizes: "any" },
@@ -48,7 +80,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "RAVONIXX | Free Fire Esports & Tactical Playbook",
-    description: "Official hub for RAVONIXX Free Fire esports organization. Discover active player rosters, sensitivities, loadouts, and community updates.",
+    description:
+      "Official hub for RAVONIXX Free Fire esports organization. Discover active player rosters, sensitivities, custom HUD loadouts, map drop strategies, and broadcasts.",
     url: "https://ravonixx.xyz",
     siteName: "RAVONIXX",
     images: [
@@ -62,6 +95,42 @@ export const metadata: Metadata = {
     locale: "en_US",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "RAVONIXX | Free Fire Esports Organization",
+    description:
+      "Official hub for RAVONIXX Free Fire esports organization. Roster, sensitivities, custom HUDs, and scrim schedules.",
+    images: ["/images/logo/ravonixx_dark.png"],
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SportsOrganization",
+      "@id": "https://ravonixx.xyz/#organization",
+      "name": "RAVONIXX",
+      "url": "https://ravonixx.xyz",
+      "logo": "https://ravonixx.xyz/images/logo/ravonixx_dark.png",
+      "description": "Premier Free Fire competitive esports organization and tactical consultancy.",
+      "sameAs": [
+        "https://www.youtube.com/@ravonixx-09",
+        "https://www.instagram.com/ravonixx.ind",
+        "https://dsc.gg/ravonixx",
+        "https://www.linkedin.com/company/ravonixx"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://ravonixx.xyz/#website",
+      "url": "https://ravonixx.xyz",
+      "name": "RAVONIXX",
+      "publisher": {
+        "@id": "https://ravonixx.xyz/#organization"
+      }
+    }
+  ]
 };
 
 export default function RootLayout({
@@ -74,6 +143,10 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/images/logo/ravonixx_dark.png" sizes="any" />
         <link rel="apple-touch-icon" href="/images/logo/ravonixx_dark.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body className="font-body bg-void text-text-primary antialiased min-h-screen flex flex-col justify-between">
         <Providers>
