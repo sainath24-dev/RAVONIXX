@@ -1,21 +1,4 @@
-export interface MapLocation {
-  id: string;
-  name: string;
-  x: number; // Normalized coordinate 0..1
-  y: number; // Normalized coordinate 0..1
-  droneViews: string[];
-  remoteUrls?: string[];
-}
-
-export interface MapData {
-  id: string;
-  name: string;
-  src: string;
-  remoteMapUrl?: string;
-  locations?: MapLocation[];
-}
-
-export const MAPS_DATABASE: Record<string, MapData> = {
+{
   "bermuda": {
     "id": "bermuda",
     "name": "Bermuda",
@@ -1314,4 +1297,4 @@ export const MAPS_DATABASE: Record<string, MapData> = {
       }
     ]
   }
-};
+}

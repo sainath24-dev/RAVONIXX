@@ -355,7 +355,7 @@ export const players: Player[] = [
   {
     id: "arise",
     ign: "RVX-ARISE.04",
-    realName: "Mayur (Arise)",
+    realName: "AK(Arise)",
     role: "PRIMARY RUSHER / SECONDARY RUSHER",
     location: "India",
     uid: "2590977394",

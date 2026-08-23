@@ -94,8 +94,7 @@ export default function ContactPage() {
       setFormStatus("success");
       reset();
     } catch {
-      setFormStatus("success");
-      reset();
+      setFormStatus("error");
     }
   };
 

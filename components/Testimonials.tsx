@@ -6,8 +6,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquarePlus, Send, CheckCircle2, Star, User } from "lucide-react";
 import { fadeUp } from "@/lib/motion";
 
-const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1538130672835629076/A4YaYtDR8pB35OB7sS8r_WwL9F5VMn-xKr54ku3vGlPlpJI8az5n_7AbqhPdHoBIzq2a";
-
 export interface CommunityFeedback {
   id: string;
   name: string;
@@ -71,7 +69,7 @@ export default function Testimonials() {
       date: "Just now",
     };
 
-    // Save permanently to localStorage
+    // Save locally to state & localStorage
     const updatedList = [newEntry, ...feedbacks];
     setFeedbacks(updatedList);
     try {
@@ -80,33 +78,21 @@ export default function Testimonials() {
       // ignore
     }
 
-    // Send to Discord Webhook
+    // Send to Secure Server-Side Feedback BFF API Route
     try {
-      const payload = {
-        username: "RAVONIXX Community Voice",
-        embeds: [
-          {
-            title: "💬 New Player Feedback & Review",
-            description: `**"${message.trim()}"**`,
-            color: 16766720, // Gold / Purple
-            fields: [
-              { name: "👤 Player / Creator", value: name.trim(), inline: true },
-              { name: "🏷️ Role", value: role.trim(), inline: true },
-              { name: "⭐ Rating", value: `${"★".repeat(rating)} (${rating}/5)`, inline: true }
-            ],
-            footer: { text: "RAVONIXX Esports & Consultancy Community Wall" },
-            timestamp: new Date().toISOString()
-          }
-        ]
-      };
-
-      await fetch(DISCORD_WEBHOOK_URL, {
+      await fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          name: name.trim(),
+          role: role.trim() || "Community Member",
+          avatarUrl: selectedAvatar,
+          rating,
+          text: message.trim(),
+        }),
       });
     } catch {
-      // ignore webhook failures
+      // ignore network errors
     }
 
     setIsSubmitting(false);

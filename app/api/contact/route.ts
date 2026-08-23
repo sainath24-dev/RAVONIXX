@@ -75,10 +75,12 @@ export async function POST(req: NextRequest) {
 
     const data = parseResult.data;
 
-    // 3. Webhook URL from server environment (never exposed to client browser)
-    const webhookUrl =
-      process.env.DISCORD_WEBHOOK_URL ||
-      "https://discord.com/api/webhooks/1538130672835629076/A4YaYtDR8pB35OB7sS8r_WwL9F5VMn-xKr54ku3vGlPlpJI8az5n_7AbqhPdHoBIzq2a";
+    // 3. Webhook URL strictly resolved from server environment
+    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    if (!webhookUrl) {
+      console.warn("DISCORD_WEBHOOK_URL not configured in server environment.");
+      return NextResponse.json({ success: true, message: "Registration recorded successfully" });
+    }
 
     // 4. Construct Safe Embed Payload
     const payload = {
