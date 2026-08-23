@@ -152,8 +152,8 @@ export default function StrategyPage() {
   const [zoom, setZoom] = useState<number>(1);
   const [pan, setPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Tools
-  const [activeTool, setActiveTool] = useState<ToolMode>("pencil");
+  // Tools - Pan is default mode for exploration
+  const [activeTool, setActiveTool] = useState<ToolMode>("pan");
   const [activeMarkerType, setActiveMarkerType] = useState<MarkerType>("spawn");
   const [markerLabel, setMarkerLabel] = useState("");
   const [activeTab, setActiveTab] = useState<"tools" | "squad" | "zones" | "presets">("tools");
@@ -176,6 +176,10 @@ export default function StrategyPage() {
   const [currentDrawPoints, setCurrentDrawPoints] = useState<Point[]>([]);
   const [isPanning, setIsPanning] = useState(false);
   const dragStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const activePointersRef = useRef<Map<number, { x: number; y: number }>>(new Map());
+  const initialPinchDistRef = useRef<number | null>(null);
+  const initialZoomRef = useRef<number>(1);
+  const lastTapRef = useRef<number>(0);
 
   const viewportRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -478,11 +482,34 @@ export default function StrategyPage() {
   };
 
   const handlePointerDown = (e: React.PointerEvent) => {
+    activePointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     try {
       (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     } catch {
       // ignore
     }
+
+    // Multi-touch Pinch-to-Zoom handling for phones & touch screens
+    if (activePointersRef.current.size === 2) {
+      setIsDrawing(false);
+      setIsPanning(false);
+      const pts = Array.from(activePointersRef.current.values());
+      const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      initialPinchDistRef.current = dist;
+      initialZoomRef.current = zoom;
+      return;
+    }
+
+    // Double-tap zoom reset for mobile convenience
+    const now = Date.now();
+    if (now - lastTapRef.current < 300) {
+      if (zoom > 1.0) {
+        handleResetZoom();
+        lastTapRef.current = 0;
+        return;
+      }
+    }
+    lastTapRef.current = now;
 
     if (activeTool === "pan") {
       setIsPanning(true);
@@ -518,6 +545,23 @@ export default function StrategyPage() {
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
+    activePointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    // Handle 2-finger Pinch Zoom
+    if (activePointersRef.current.size >= 2) {
+      const pts = Array.from(activePointersRef.current.values());
+      const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+      if (initialPinchDistRef.current && initialPinchDistRef.current > 10) {
+        const scaleFactor = dist / initialPinchDistRef.current;
+        const newZoom = Math.min(Math.max(Number((initialZoomRef.current * scaleFactor).toFixed(2)), 1.0), 3.0);
+        setZoom(newZoom);
+        if (newZoom === 1) {
+          setPan({ x: 0, y: 0 });
+        }
+      }
+      return;
+    }
+
     if (activeTool === "pan") {
       if (isPanning) {
         setPan({
@@ -534,10 +578,15 @@ export default function StrategyPage() {
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
+    activePointersRef.current.delete(e.pointerId);
     try {
       (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
     } catch {
       // ignore
+    }
+
+    if (activePointersRef.current.size < 2) {
+      initialPinchDistRef.current = null;
     }
 
     if (activeTool === "pan") {
@@ -1062,9 +1111,18 @@ export default function StrategyPage() {
                 <span className="text-xs sm:text-sm font-display font-bold text-text-muted uppercase">Tactical Tools</span>
                 <div className="grid grid-cols-3 gap-2.5">
                   <button
+                    onClick={() => setActiveTool("pan")}
+                    className={`p-3 border text-xs sm:text-sm font-display font-bold uppercase flex items-center justify-center gap-1.5 rounded-lg transition-colors ${
+                      activeTool === "pan" ? "border-white/80 bg-white/20 text-white shadow" : "border-hairline text-text-muted hover:text-white hover:bg-white/5"
+                    }`}
+                    title="Pan & navigate map"
+                  >
+                    <Navigation className="w-4 h-4" /> Pan
+                  </button>
+                  <button
                     onClick={() => setActiveTool("pencil")}
                     className={`p-3 border text-xs sm:text-sm font-display font-bold uppercase flex items-center justify-center gap-1.5 rounded-lg transition-colors ${
-                      activeTool === "pencil" ? "border-white/60 bg-white/15 text-white shadow" : "border-hairline text-text-muted hover:text-white hover:bg-white/5"
+                      activeTool === "pencil" ? "border-white/80 bg-white/20 text-white shadow" : "border-hairline text-text-muted hover:text-white hover:bg-white/5"
                     }`}
                   >
                     <Paintbrush className="w-4 h-4" /> Draw
@@ -1072,7 +1130,7 @@ export default function StrategyPage() {
                   <button
                     onClick={() => setActiveTool("arrow")}
                     className={`p-3 border text-xs sm:text-sm font-display font-bold uppercase flex items-center justify-center gap-1.5 rounded-lg transition-colors ${
-                      activeTool === "arrow" ? "border-white/60 bg-white/15 text-white shadow" : "border-hairline text-text-muted hover:text-white hover:bg-white/5"
+                      activeTool === "arrow" ? "border-white/80 bg-white/20 text-white shadow" : "border-hairline text-text-muted hover:text-white hover:bg-white/5"
                     }`}
                   >
                     <ArrowRight className="w-4 h-4" /> Arrow
@@ -1080,7 +1138,7 @@ export default function StrategyPage() {
                   <button
                     onClick={() => setActiveTool("line")}
                     className={`p-3 border text-xs sm:text-sm font-display font-bold uppercase flex items-center justify-center gap-1.5 rounded-lg transition-colors ${
-                      activeTool === "line" ? "border-white/60 bg-white/15 text-white shadow" : "border-hairline text-text-muted hover:text-white hover:bg-white/5"
+                      activeTool === "line" ? "border-white/80 bg-white/20 text-white shadow" : "border-hairline text-text-muted hover:text-white hover:bg-white/5"
                     }`}
                   >
                     <Minus className="w-4 h-4" /> Line
@@ -1088,7 +1146,7 @@ export default function StrategyPage() {
                   <button
                     onClick={() => setActiveTool("circle")}
                     className={`p-3 border text-xs sm:text-sm font-display font-bold uppercase flex items-center justify-center gap-1.5 rounded-lg transition-colors ${
-                      activeTool === "circle" ? "border-white/60 bg-white/15 text-white shadow" : "border-hairline text-text-muted hover:text-white hover:bg-white/5"
+                      activeTool === "circle" ? "border-white/80 bg-white/20 text-white shadow" : "border-hairline text-text-muted hover:text-white hover:bg-white/5"
                     }`}
                   >
                     <Circle className="w-4 h-4" /> Circle
@@ -1096,19 +1154,10 @@ export default function StrategyPage() {
                   <button
                     onClick={() => setActiveTool("marker")}
                     className={`p-3 border text-xs sm:text-sm font-display font-bold uppercase flex items-center justify-center gap-1.5 rounded-lg transition-colors ${
-                      activeTool === "marker" ? "border-white/60 bg-white/15 text-white shadow" : "border-hairline text-text-muted hover:text-white hover:bg-white/5"
+                      activeTool === "marker" ? "border-white/80 bg-white/20 text-white shadow" : "border-hairline text-text-muted hover:text-white hover:bg-white/5"
                     }`}
                   >
                     <MapPin className="w-4 h-4" /> Pin
-                  </button>
-                  <button
-                    onClick={() => setActiveTool("pan")}
-                    className={`p-3 border text-xs sm:text-sm font-display font-bold uppercase flex items-center justify-center gap-1.5 rounded-lg transition-colors ${
-                      activeTool === "pan" ? "border-white/60 bg-white/15 text-white shadow" : "border-hairline text-text-muted hover:text-white hover:bg-white/5"
-                    }`}
-                    title="Drag map to pan when zoomed"
-                  >
-                    <Navigation className="w-4 h-4" /> Pan
                   </button>
                 </div>
 
@@ -1660,25 +1709,57 @@ export default function StrategyPage() {
                 className="absolute inset-0 w-full h-full z-[5] pointer-events-none"
               />
             </div>
+
+            {/* Quick Floating Zoom Overlay for Phone & Desktop */}
+            <div className="absolute bottom-3 right-3 z-30 flex items-center gap-1 bg-black/85 backdrop-blur-md border border-white/20 p-1.5 rounded-xl shadow-2xl select-none">
+              <button
+                onClick={(e) => { e.stopPropagation(); handleZoomOut(); }}
+                disabled={zoom <= 1.0}
+                className="w-8 h-8 rounded-lg bg-zinc-800 hover:bg-zinc-700 disabled:opacity-25 text-white flex items-center justify-center font-bold text-lg transition-colors"
+                title="Zoom Out"
+              >
+                −
+              </button>
+              <span className="text-xs font-mono font-black text-white px-2 min-w-[42px] text-center">
+                {Math.round(zoom * 100)}%
+              </span>
+              <button
+                onClick={(e) => { e.stopPropagation(); handleZoomIn(); }}
+                disabled={zoom >= 3.0}
+                className="w-8 h-8 rounded-lg bg-zinc-800 hover:bg-zinc-700 disabled:opacity-25 text-white flex items-center justify-center font-bold text-lg transition-colors"
+                title="Zoom In"
+              >
+                +
+              </button>
+              {zoom > 1.0 && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleResetZoom(); }}
+                  className="px-2.5 h-8 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-cyan-400 hover:text-cyan-300 text-xs font-mono font-bold flex items-center justify-center transition-colors"
+                  title="Reset 100% Zoom"
+                >
+                  1x
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Mobile Quick-Toolbar */}
           <div className="lg:hidden flex flex-col gap-3 p-3.5 bg-panel border border-hairline rounded-xl shadow-lg">
-            <div className="flex items-center justify-between gap-2 overflow-x-auto pb-1">
+            <div className="flex items-center justify-between gap-1.5 overflow-x-auto pb-1">
               {[
+                { id: "pan", label: "Pan", icon: Navigation },
                 { id: "pencil", label: "Draw", icon: Paintbrush },
                 { id: "arrow", label: "Arrow", icon: ArrowRight },
                 { id: "circle", label: "Circle", icon: Circle },
                 { id: "line", label: "Line", icon: Minus },
                 { id: "marker", label: "Pin", icon: MapPin },
-                { id: "pan", label: "Pan", icon: Navigation }
               ].map((t) => (
                 <button
                   key={t.id}
                   onClick={() => setActiveTool(t.id as ToolMode)}
-                  className={`flex-1 py-2.5 px-2 border text-xs font-display font-black uppercase flex flex-col items-center justify-center gap-1 rounded-lg transition-all min-w-[55px] ${
+                  className={`flex-1 py-2.5 px-2 border text-xs font-display font-black uppercase flex flex-col items-center justify-center gap-1 rounded-lg transition-all min-w-[50px] ${
                     activeTool === t.id
-                      ? "border-white/80 bg-white/15 text-white shadow-md"
+                      ? "border-white/90 bg-white/20 text-white shadow-md scale-[1.03]"
                       : "border-hairline text-text-muted hover:text-white bg-panel-raised"
                   }`}
                 >
