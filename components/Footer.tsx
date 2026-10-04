@@ -4,7 +4,7 @@ import React, { useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { MessageSquare, Shield } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 
 const Youtube = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -133,13 +133,6 @@ export default function Footer() {
             <Link href="/contact" className="font-display text-sm text-text-muted hover:text-text-primary tracking-widest transition-colors">
               CONTACT
             </Link>
-            <Link
-              href="/admin/login"
-              className="font-display text-sm text-primary hover:text-white tracking-widest transition-colors flex items-center gap-1.5 px-3 py-1 rounded bg-primary/10 border border-primary/30 hover:bg-primary/20 shadow-[0_0_10px_rgba(168,85,247,0.2)]"
-            >
-              <Shield className="w-3.5 h-3.5" />
-              LOGIN
-            </Link>
           </div>
 
           {/* Magnetic Social Icons */}
@@ -240,9 +233,8 @@ export default function Footer() {
           <div className="flex items-center space-x-6">
             <Link
               href="/admin/login"
-              className="text-primary hover:text-white transition-colors flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider"
+              className="text-text-dim hover:text-text-muted transition-colors font-mono text-[11px] uppercase tracking-wider"
             >
-              <Shield className="w-3 h-3" />
               LOGIN
             </Link>
             <Link href="/policy" className="hover:text-text-muted transition-colors">

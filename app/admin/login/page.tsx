@@ -4,6 +4,7 @@ import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight, AlertCircle, Loader2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 function AdminLoginForm() {
   const router = useRouter();
@@ -51,11 +52,14 @@ function AdminLoginForm() {
   return (
     <div className="relative w-full max-w-md bg-[#0E1528] border border-[#1A233D] p-6 sm:p-8 rounded-sm shadow-2xl z-10">
       <div className="flex flex-col items-center text-center mb-6">
-        <div 
-          className="w-14 h-14 bg-[#FFB800] text-black font-display font-black flex items-center justify-center text-lg shadow-[0_2px_15px_rgba(255,184,0,0.3)] mb-3"
-          style={{ clipPath: "polygon(0 0, 100% 0, 85% 100%, 0 100%)" }}
-        >
-          FF
+        <div className="relative w-12 h-12 mb-3">
+          <Image
+            src="/images/logo/ravonixx_white.png"
+            alt="RAVONIXX Logo"
+            width={48}
+            height={48}
+            className="object-contain"
+          />
         </div>
         <h1 className="font-display font-black text-2xl text-white tracking-wider uppercase">
           LOGIN

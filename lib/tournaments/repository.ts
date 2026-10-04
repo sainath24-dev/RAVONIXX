@@ -29,65 +29,6 @@ class AsyncMutex {
 
 const dbMutex = new AsyncMutex();
 
-// Seed Initial Tournament if empty
-async function initSeedDataIfEmpty() {
-  const tournaments = await readJsonData<Tournament[]>(TOURNAMENTS_KEY, []);
-  if (tournaments.length === 0) {
-    const now = new Date();
-    const openDate = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString();
-    const closeDate = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000).toISOString();
-
-    const sampleTournament: Tournament = {
-      id: "trn_ravonixx_s1_freefire",
-      title: "RAVONIXX Free Fire Championship • Season 1",
-      slug: "ravonixx-ff-championship-s1",
-      bannerUrl: "/images/maps/Free_Fire_Map_Bermuda_2023.png",
-      gameName: "Free Fire Max",
-      shortDescription:
-        "The flagship Free Fire Squad showdown. 48 Tier-1 teams compete across Bermuda, Purgatory, and Kalahari for ₹50,000 INR.",
-      fullDetails: `### Official Tournament Overview
-Welcome to the premier **RAVONIXX Free Fire Championship: Season 1**. 
-
-This tournament showcases the finest mobile esports talent across India & South Asia. Teams will battle through qualifiers, semi-finals, and grand finals broadcasted live on the RAVONIXX YouTube & Discord stages.
-
-#### Schedule & Phases
-* **Phase 1: Group Qualifiers** — Saturday (6 Matches, Top 24 qualify)
-* **Phase 2: Semi-Finals** — Sunday 2:00 PM IST (Top 12 qualify)
-* **Phase 3: Grand Finals** — Sunday 7:00 PM IST (6 Rounds)
-
-#### Prize Pool Breakdown (₹50,000 INR)
-* **1st Place (Champions):** ₹25,000 + Exclusive RAVONIXX Trophy
-* **2nd Place (Runners Up):** ₹12,000
-* **3rd Place:** ₹8,000
-* **Tournament MVP:** ₹5,000`,
-      rules: `### Tournament Rules & Regulations
-
-1. **Format & Mode:** Battle Royale Squad (4 Active Players + 1 Optional Substitute).
-2. **Device Policy:** Only handheld smartphones (Android / iOS) are permitted. Emulators, iPads/tablets, triggers, and third-party macro tools are strictly prohibited and will result in instant disqualification and blacklist.
-3. **Anti-Cheat:** All players must have a minimum account level of 45 with Heroic rank or above. Game logs and recording of POV may be requested by admins.
-4. **Punctuality:** Room credentials will be sent to the Captain's WhatsApp/Email 15 minutes before match start. Teams failing to join within 10 minutes will forfeit their slot.
-5. **Fair Play & Code of Conduct:** Toxicity, intentional teaming, bug exploitation, or offensive team names are strictly forbidden. The decision of RAVONIXX administrators is final.`,
-      prizePool: "₹50,000 INR",
-      entryFee: "Free",
-      format: "Squad",
-      matchSchedule: "October 18 - 19, 2026 • 6:00 PM IST",
-      registrationOpenDate: openDate,
-      registrationCloseDate: closeDate,
-      maxTeams: 48,
-      status: "Registration Open",
-      roomDetails: "Room ID & Pass will be released to approved teams 15 mins before match.",
-      isRoomDetailsVisible: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    await writeJsonData(TOURNAMENTS_KEY, [sampleTournament]);
-  }
-}
-
-// Initialize seed on module load
-initSeedDataIfEmpty().catch(console.error);
-
 // ---------------- TOURNAMENTS REPOSITORY ---------------- //
 
 export async function getAllTournaments(): Promise<Tournament[]> {

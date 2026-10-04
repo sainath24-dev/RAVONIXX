@@ -34,59 +34,14 @@ export function setCached<T>(key: string, data: T): void {
   globalStore.__ravonixx_cache[key] = data;
 }
 
-// Determine safe writable directory
-export function getWritableDataDir(): string {
-  if (globalStore.__ravonixx_data_dir) {
-    return globalStore.__ravonixx_data_dir;
-  }
-
-  // If in serverless or production, directly use os.tmpdir()
-  if (isServerlessEnvironment() || process.env.NODE_ENV === "production") {
-    const tmpDir = path.join(os.tmpdir(), "ravonixx-data");
-    try {
-      if (!fs.existsSync(tmpDir)) {
-        fs.mkdirSync(tmpDir, { recursive: true });
-      }
-      globalStore.__ravonixx_data_dir = tmpDir;
-      return tmpDir;
-    } catch {
-      globalStore.__ravonixx_data_dir = os.tmpdir();
-      return os.tmpdir();
-    }
-  }
-
-  // Local development: test if process.cwd()/data is writable
-  const localDir = path.join(process.cwd(), "data");
-  try {
-    if (!fs.existsSync(localDir)) {
-      fs.mkdirSync(localDir, { recursive: true });
-    }
-    const testFile = path.join(localDir, `.write_test_${Date.now()}`);
-    fs.writeFileSync(testFile, "ok");
-    fs.unlinkSync(testFile);
-    globalStore.__ravonixx_data_dir = localDir;
-    return localDir;
-  } catch {
-    // If local dir is not writable (e.g. read-only container), fallback to tmpdir
-    const tmpDir = path.join(os.tmpdir(), "ravonixx-data");
-    try {
-      if (!fs.existsSync(tmpDir)) {
-        fs.mkdirSync(tmpDir, { recursive: true });
-      }
-    } catch {
-      // ignore
-    }
-    globalStore.__ravonixx_data_dir = tmpDir;
-    return tmpDir;
+// Clear cache key if needed
+export function clearCached(key: string): void {
+  if (globalStore.__ravonixx_cache) {
+    delete globalStore.__ravonixx_cache[key];
   }
 }
 
-// Get the bundled seed path in the deployment package
-export function getBundledSeedPath(filename: string): string {
-  return path.join(process.cwd(), "data", filename);
-}
-
-// Safe JSON reader with multi-tier fallback: Memory -> Writable /tmp -> Bundled Seed -> Default
+// Safe JSON reader with multi-tier fallback: Memory -> Writable /tmp -> Project ./data -> Default
 export async function readJsonData<T>(filename: string, defaultValue: T): Promise<T> {
   // 1. Check in-memory warm cache
   const cached = getCached<T>(filename);
@@ -94,43 +49,30 @@ export async function readJsonData<T>(filename: string, defaultValue: T): Promis
     return cached;
   }
 
-  const writableDir = getWritableDataDir();
-  const writableFile = path.join(writableDir, filename);
-
-  // 2. Check writable file (e.g. in /tmp/ravonixx-data)
+  // 2. Check writable /tmp/ravonixx-data first (captures runtime mutations on serverless)
+  const tmpFile = path.join(os.tmpdir(), "ravonixx-data", filename);
   try {
-    if (fs.existsSync(writableFile)) {
-      const content = await fs.promises.readFile(writableFile, "utf-8");
+    if (fs.existsSync(tmpFile)) {
+      const content = await fs.promises.readFile(tmpFile, "utf-8");
       const parsed = JSON.parse(content) as T;
       setCached(filename, parsed);
       return parsed;
     }
   } catch (err) {
-    console.warn(`Could not read writable file ${writableFile}:`, err);
+    console.warn(`Could not read tmp file ${tmpFile}:`, err);
   }
 
-  // 3. Check bundled seed file in process.cwd()/data
-  const seedFile = getBundledSeedPath(filename);
+  // 3. Check project ./data/ directory (bundled files or local disk)
+  const localFile = path.join(process.cwd(), "data", filename);
   try {
-    if (fs.existsSync(seedFile)) {
-      const content = await fs.promises.readFile(seedFile, "utf-8");
+    if (fs.existsSync(localFile)) {
+      const content = await fs.promises.readFile(localFile, "utf-8");
       const parsed = JSON.parse(content) as T;
       setCached(filename, parsed);
-
-      // Best effort seed copy to writable path
-      try {
-        if (!fs.existsSync(writableDir)) {
-          await fs.promises.mkdir(writableDir, { recursive: true });
-        }
-        await fs.promises.writeFile(writableFile, content, "utf-8");
-      } catch {
-        // Ignore copy errors
-      }
-
       return parsed;
     }
   } catch (err) {
-    console.warn(`Could not read bundled seed file ${seedFile}:`, err);
+    console.warn(`Could not read local file ${localFile}:`, err);
   }
 
   // 4. Fallback to default
@@ -138,23 +80,38 @@ export async function readJsonData<T>(filename: string, defaultValue: T): Promis
   return defaultValue;
 }
 
-// Safe JSON writer: Updates memory cache + atomic write to writable /tmp
+// Safe JSON writer: Updates memory cache + writes directly to ./data/ (if writable) + writes to /tmp/ravonixx-data/
 export async function writeJsonData<T>(filename: string, data: T): Promise<void> {
   // Always update in-memory cache first so next read immediately has latest data
   setCached(filename, data);
 
-  const writableDir = getWritableDataDir();
-  const targetPath = path.join(writableDir, filename);
-  const tempPath = path.join(writableDir, `${filename}.${crypto.randomBytes(6).toString("hex")}.tmp`);
+  const jsonString = JSON.stringify(data, null, 2);
 
+  // 1. Persist directly to project ./data/ directory if writable (local dev & persistent environments)
   try {
-    if (!fs.existsSync(writableDir)) {
-      await fs.promises.mkdir(writableDir, { recursive: true });
+    const localDir = path.join(process.cwd(), "data");
+    if (!fs.existsSync(localDir)) {
+      await fs.promises.mkdir(localDir, { recursive: true });
     }
-    await fs.promises.writeFile(tempPath, JSON.stringify(data, null, 2), "utf-8");
+    const localFile = path.join(localDir, filename);
+    const tempLocalFile = path.join(localDir, `${filename}.${crypto.randomBytes(6).toString("hex")}.tmp`);
+    await fs.promises.writeFile(tempLocalFile, jsonString, "utf-8");
+    await fs.promises.rename(tempLocalFile, localFile);
+  } catch {
+    // If localDir is read-only (e.g. Vercel serverless /var/task), safe to ignore
+  }
+
+  // 2. Also write to writable /tmp/ravonixx-data/ for serverless environments
+  try {
+    const tmpDir = path.join(os.tmpdir(), "ravonixx-data");
+    if (!fs.existsSync(tmpDir)) {
+      await fs.promises.mkdir(tmpDir, { recursive: true });
+    }
+    const targetPath = path.join(tmpDir, filename);
+    const tempPath = path.join(tmpDir, `${filename}.${crypto.randomBytes(6).toString("hex")}.tmp`);
+    await fs.promises.writeFile(tempPath, jsonString, "utf-8");
     await fs.promises.rename(tempPath, targetPath);
   } catch (err) {
-    console.error(`Warning: Failed to write ${filename} to disk:`, err);
-    // Even if disk write failed on read-only system, data remains safely in memory cache!
+    console.error(`Warning: Failed to write ${filename} to tmp:`, err);
   }
 }
