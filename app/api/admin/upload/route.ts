@@ -68,7 +68,25 @@ export async function POST(req: NextRequest) {
     const mime = file.type || "image/png";
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    // Attempt writing to public/uploads (local dev)
+    // In serverless production (e.g. Vercel), return Base64 Data URL so images are permanently embedded in JSON without 404
+    const isServerless = Boolean(
+      process.env.VERCEL ||
+      process.env.AWS_LAMBDA_FUNCTION_NAME ||
+      process.env.LAMBDA_TASK_ROOT ||
+      process.env.NODE_ENV === "production"
+    );
+
+    if (isServerless) {
+      const dataUrl = `data:${mime};base64,${buffer.toString("base64")}`;
+      return NextResponse.json({
+        success: true,
+        url: dataUrl,
+        fileName: sanitizedFileName,
+        size: file.size,
+      });
+    }
+
+    // Local development: write to public/uploads
     try {
       const uploadsDir = path.join(process.cwd(), "public", "uploads");
       await fs.mkdir(uploadsDir, { recursive: true });
@@ -81,8 +99,7 @@ export async function POST(req: NextRequest) {
         fileName: sanitizedFileName,
         size: file.size,
       });
-    } catch (fsErr: unknown) {
-      // In serverless / read-only environment (e.g. Vercel), fallback to Base64 Data URL
+    } catch {
       const dataUrl = `data:${mime};base64,${buffer.toString("base64")}`;
       return NextResponse.json({
         success: true,
