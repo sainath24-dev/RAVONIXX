@@ -65,37 +65,32 @@ export async function POST(req: NextRequest) {
     const uniqueId = crypto.randomBytes(12).toString("hex");
     const sanitizedFileName = `rvx_${Date.now()}_${uniqueId}${ext}`;
 
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    await fs.mkdir(uploadsDir, { recursive: true });
-
+    const mime = file.type || "image/png";
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    // Magic Bytes Verification (defense-in-depth against malicious file extension spoofing)
-    const isPng = buffer.length > 4 && buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47;
-    const isJpg = buffer.length > 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
-    const isGif = buffer.length > 3 && buffer[0] === 0x47 && buffer[1] === 0x49 && buffer[2] === 0x46;
-    const isWebp = buffer.length > 12 &&
-      buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46 &&
-      buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50;
+    // Attempt writing to public/uploads (local dev)
+    try {
+      const uploadsDir = path.join(process.cwd(), "public", "uploads");
+      await fs.mkdir(uploadsDir, { recursive: true });
+      const filePath = path.join(uploadsDir, sanitizedFileName);
+      await fs.writeFile(filePath, buffer);
 
-    if (!isPng && !isJpg && !isGif && !isWebp) {
-      return NextResponse.json(
-        { error: "Corrupted or invalid image binary signature (magic bytes rejected)" },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        success: true,
+        url: `/uploads/${sanitizedFileName}`,
+        fileName: sanitizedFileName,
+        size: file.size,
+      });
+    } catch (fsErr: unknown) {
+      // In serverless / read-only environment (e.g. Vercel), fallback to Base64 Data URL
+      const dataUrl = `data:${mime};base64,${buffer.toString("base64")}`;
+      return NextResponse.json({
+        success: true,
+        url: dataUrl,
+        fileName: sanitizedFileName,
+        size: file.size,
+      });
     }
-
-    const filePath = path.join(uploadsDir, sanitizedFileName);
-    await fs.writeFile(filePath, buffer);
-
-    const publicUrl = `/uploads/${sanitizedFileName}`;
-
-    return NextResponse.json({
-      success: true,
-      url: publicUrl,
-      fileName: sanitizedFileName,
-      size: file.size,
-    });
   } catch (error: any) {
     console.error("Admin file upload error:", error);
     return NextResponse.json(

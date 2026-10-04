@@ -1,17 +1,15 @@
-import fs from "fs";
-import path from "path";
 import crypto from "crypto";
 import {
   Tournament,
   TournamentRegistration,
   TournamentUpsertInput,
 } from "./types";
+import { readJsonData, writeJsonData } from "@/lib/serverless-fs";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const TOURNAMENTS_FILE = path.join(DATA_DIR, "tournaments.json");
-const REGISTRATIONS_FILE = path.join(DATA_DIR, "registrations.json");
+const TOURNAMENTS_KEY = "tournaments.json";
+const REGISTRATIONS_KEY = "registrations.json";
 
-// Simple async queue mutex to ensure serialized atomic file writes
+// Simple async queue mutex to ensure serialized atomic operations
 class AsyncMutex {
   private queue: Promise<void> = Promise.resolve();
 
@@ -31,37 +29,9 @@ class AsyncMutex {
 
 const dbMutex = new AsyncMutex();
 
-async function ensureDataDirectory() {
-  if (!fs.existsSync(DATA_DIR)) {
-    await fs.promises.mkdir(DATA_DIR, { recursive: true });
-  }
-}
-
-async function readJsonFile<T>(filePath: string, defaultValue: T): Promise<T> {
-  await ensureDataDirectory();
-  if (!fs.existsSync(filePath)) {
-    await writeAtomic(filePath, defaultValue);
-    return defaultValue;
-  }
-  try {
-    const raw = await fs.promises.readFile(filePath, "utf-8");
-    return JSON.parse(raw) as T;
-  } catch (err) {
-    console.error(`Error reading ${filePath}, using default:`, err);
-    return defaultValue;
-  }
-}
-
-async function writeAtomic<T>(filePath: string, data: T): Promise<void> {
-  await ensureDataDirectory();
-  const tempPath = `${filePath}.${crypto.randomBytes(6).toString("hex")}.tmp`;
-  await fs.promises.writeFile(tempPath, JSON.stringify(data, null, 2), "utf-8");
-  await fs.promises.rename(tempPath, filePath);
-}
-
 // Seed Initial Tournament if empty
 async function initSeedDataIfEmpty() {
-  const tournaments = await readJsonFile<Tournament[]>(TOURNAMENTS_FILE, []);
+  const tournaments = await readJsonData<Tournament[]>(TOURNAMENTS_KEY, []);
   if (tournaments.length === 0) {
     const now = new Date();
     const openDate = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString();
@@ -111,7 +81,7 @@ This tournament showcases the finest mobile esports talent across India & South 
       updatedAt: new Date().toISOString(),
     };
 
-    await writeAtomic(TOURNAMENTS_FILE, [sampleTournament]);
+    await writeJsonData(TOURNAMENTS_KEY, [sampleTournament]);
   }
 }
 
@@ -121,7 +91,7 @@ initSeedDataIfEmpty().catch(console.error);
 // ---------------- TOURNAMENTS REPOSITORY ---------------- //
 
 export async function getAllTournaments(): Promise<Tournament[]> {
-  return readJsonFile<Tournament[]>(TOURNAMENTS_FILE, []);
+  return readJsonData<Tournament[]>(TOURNAMENTS_KEY, []);
 }
 
 export async function getTournamentById(id: string): Promise<Tournament | null> {
@@ -156,7 +126,7 @@ export async function createTournament(
     };
 
     tournaments.unshift(newTournament);
-    await writeAtomic(TOURNAMENTS_FILE, tournaments);
+    await writeJsonData(TOURNAMENTS_KEY, tournaments);
     return newTournament;
   });
 }
@@ -191,7 +161,7 @@ export async function updateTournament(
     };
 
     tournaments[index] = updated;
-    await writeAtomic(TOURNAMENTS_FILE, tournaments);
+    await writeJsonData(TOURNAMENTS_KEY, tournaments);
     return updated;
   });
 }
@@ -202,15 +172,15 @@ export async function deleteTournament(id: string): Promise<boolean> {
     const filtered = tournaments.filter((t) => t.id !== id);
     if (filtered.length === tournaments.length) return false;
 
-    await writeAtomic(TOURNAMENTS_FILE, filtered);
+    await writeJsonData(TOURNAMENTS_KEY, filtered);
 
     // Also cascade remove registrations for this tournament
-    const registrations = await readJsonFile<TournamentRegistration[]>(
-      REGISTRATIONS_FILE,
+    const registrations = await readJsonData<TournamentRegistration[]>(
+      REGISTRATIONS_KEY,
       []
     );
     const remainingRegs = registrations.filter((r) => r.tournamentId !== id);
-    await writeAtomic(REGISTRATIONS_FILE, remainingRegs);
+    await writeJsonData(REGISTRATIONS_KEY, remainingRegs);
 
     return true;
   });
@@ -219,7 +189,7 @@ export async function deleteTournament(id: string): Promise<boolean> {
 // ---------------- REGISTRATIONS REPOSITORY ---------------- //
 
 export async function getAllRegistrations(): Promise<TournamentRegistration[]> {
-  return readJsonFile<TournamentRegistration[]>(REGISTRATIONS_FILE, []);
+  return readJsonData<TournamentRegistration[]>(REGISTRATIONS_KEY, []);
 }
 
 export async function getRegistrationsByTournamentId(
@@ -301,7 +271,7 @@ export async function createRegistration(
     };
 
     registrations.push(newRegistration);
-    await writeAtomic(REGISTRATIONS_FILE, registrations);
+    await writeJsonData(REGISTRATIONS_KEY, registrations);
     return newRegistration;
   });
 }
@@ -328,7 +298,7 @@ export async function updateRegistration(
     };
 
     registrations[index] = updated;
-    await writeAtomic(REGISTRATIONS_FILE, registrations);
+    await writeJsonData(REGISTRATIONS_KEY, registrations);
     return updated;
   });
 }
@@ -339,7 +309,7 @@ export async function deleteRegistration(id: string): Promise<boolean> {
     const filtered = registrations.filter((r) => r.id !== id);
     if (filtered.length === registrations.length) return false;
 
-    await writeAtomic(REGISTRATIONS_FILE, filtered);
+    await writeJsonData(REGISTRATIONS_KEY, filtered);
     return true;
   });
 }

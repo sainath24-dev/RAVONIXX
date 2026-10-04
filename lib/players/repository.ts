@@ -1,8 +1,7 @@
-import fs from "fs/promises";
-import path from "path";
 import { Player, players as fallbackPlayers } from "@/lib/players";
+import { readJsonData, writeJsonData } from "@/lib/serverless-fs";
 
-const PLAYERS_FILE = path.join(process.cwd(), "data", "players.json");
+const PLAYERS_KEY = "players.json";
 
 class SimpleMutex {
   private locked = false;
@@ -34,28 +33,19 @@ const mutex = new SimpleMutex();
 
 async function readPlayersFile(): Promise<Player[]> {
   try {
-    const raw = await fs.readFile(PLAYERS_FILE, "utf-8");
-    const parsed = JSON.parse(raw);
+    const parsed = await readJsonData<Player[]>(PLAYERS_KEY, fallbackPlayers);
     if (Array.isArray(parsed) && parsed.length > 0) {
       return parsed;
     }
     return fallbackPlayers;
-  } catch (err: any) {
-    if (err.code === "ENOENT") {
-      await fs.mkdir(path.dirname(PLAYERS_FILE), { recursive: true });
-      await fs.writeFile(PLAYERS_FILE, JSON.stringify(fallbackPlayers, null, 2), "utf-8");
-      return fallbackPlayers;
-    }
+  } catch (err: unknown) {
     console.error("Error reading players file, using fallback:", err);
     return fallbackPlayers;
   }
 }
 
 async function writePlayersFile(players: Player[]): Promise<void> {
-  await fs.mkdir(path.dirname(PLAYERS_FILE), { recursive: true });
-  const tempFile = `${PLAYERS_FILE}.tmp.${Date.now()}`;
-  await fs.writeFile(tempFile, JSON.stringify(players, null, 2), "utf-8");
-  await fs.rename(tempFile, PLAYERS_FILE);
+  await writeJsonData(PLAYERS_KEY, players);
 }
 
 export async function getAllPlayers(): Promise<Player[]> {
