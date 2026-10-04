@@ -58,10 +58,10 @@ function AdminLoginForm() {
           FF
         </div>
         <h1 className="font-display font-black text-2xl text-white tracking-wider uppercase">
-          ADMIN LOGIN
+          LOGIN
         </h1>
         <p className="text-xs text-white/60 mt-1">
-          Free Fire Tournament Management Portal
+          Admin Access
         </p>
       </div>
 
@@ -139,7 +139,7 @@ export default function AdminLoginPage() {
       <Suspense fallback={
         <div className="flex items-center justify-center p-8 text-white/60 gap-3">
           <Loader2 className="w-6 h-6 animate-spin text-[#FFB800]" />
-          <span className="font-display uppercase text-xs tracking-wider">Loading Portal...</span>
+          <span className="font-display uppercase text-xs tracking-wider">Loading...</span>
         </div>
       }>
         <AdminLoginForm />

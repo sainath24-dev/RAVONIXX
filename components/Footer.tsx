@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { MessageSquare, Shield } from "lucide-react";
-import PortalLoginModal from "@/components/PortalLoginModal";
 
 const Youtube = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -79,7 +78,6 @@ function MagneticSocialIcon({ children, href }: { children: React.ReactNode; hre
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
 
   return (
     <footer className="border-t border-hairline bg-panel py-12 relative overflow-hidden">
@@ -135,14 +133,13 @@ export default function Footer() {
             <Link href="/contact" className="font-display text-sm text-text-muted hover:text-text-primary tracking-widest transition-colors">
               CONTACT
             </Link>
-            <button
-              type="button"
-              onClick={() => setLoginModalOpen(true)}
+            <Link
+              href="/admin/login"
               className="font-display text-sm text-primary hover:text-white tracking-widest transition-colors flex items-center gap-1.5 px-3 py-1 rounded bg-primary/10 border border-primary/30 hover:bg-primary/20 shadow-[0_0_10px_rgba(168,85,247,0.2)]"
             >
               <Shield className="w-3.5 h-3.5" />
               LOGIN
-            </button>
+            </Link>
           </div>
 
           {/* Magnetic Social Icons */}
@@ -241,14 +238,13 @@ export default function Footer() {
             &copy; {currentYear} RAVONIXX. All rights reserved.
           </div>
           <div className="flex items-center space-x-6">
-            <button
-              type="button"
-              onClick={() => setLoginModalOpen(true)}
+            <Link
+              href="/admin/login"
               className="text-primary hover:text-white transition-colors flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider"
             >
               <Shield className="w-3 h-3" />
-              PORTAL LOGIN
-            </button>
+              LOGIN
+            </Link>
             <Link href="/policy" className="hover:text-text-muted transition-colors">
               PRIVACY POLICY
             </Link>
@@ -258,12 +254,6 @@ export default function Footer() {
           </div>
         </div>
       </div>
-
-      {/* Global Interactive Portal Login Modal */}
-      <PortalLoginModal
-        isOpen={loginModalOpen}
-        onClose={() => setLoginModalOpen(false)}
-      />
     </footer>
   );
 }
