@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { 
-  Users, Share2, ArrowLeft, RefreshCw, X, FileText, ChevronRight, Shield
+  Share2, ArrowLeft, RefreshCw, X, ChevronRight
 } from "lucide-react";
 import { Tournament, TournamentStage } from "@/lib/tournaments/types";
 import FreeFireTrophyBadge from "./FreeFireTrophyBadge";

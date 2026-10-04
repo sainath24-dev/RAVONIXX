@@ -2,16 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {
   RefreshCw,
   Search,
-  Users,
-  ChevronRight,
   Lock,
-  Globe,
   Loader2,
-  Trophy,
 } from "lucide-react";
 import { TournamentWithMeta } from "@/lib/tournaments/service";
 import FreeFireTrophyBadge from "@/components/tournaments/FreeFireTrophyBadge";
@@ -176,7 +171,6 @@ export default function TournamentsListingPage() {
             {filteredTournaments.map((t) => {
               const isOpen = t.computedStatus === "Registration Open" && t.isRegistrationCurrentlyOpen;
               const isOngoing = t.computedStatus === "Ongoing";
-              const isCompleted = t.computedStatus === "Completed";
 
               return (
                 <div

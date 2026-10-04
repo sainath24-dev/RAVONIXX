@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -8,11 +8,8 @@ import {
   Loader2,
   AlertCircle,
   KeyRound,
-  FileText,
-  Shield,
   X,
   Trophy,
-  Sparkles,
 } from "lucide-react";
 import { TournamentWithMeta } from "@/lib/tournaments/service";
 import FreeFireTournamentRoadmap from "@/components/tournaments/FreeFireTournamentRoadmap";

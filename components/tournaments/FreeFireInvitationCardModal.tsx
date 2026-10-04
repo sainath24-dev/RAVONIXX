@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { X, Check, Copy, Download, ExternalLink, QrCode } from "lucide-react";
+import { X, Check, Copy, Download } from "lucide-react";
 import { Tournament } from "@/lib/tournaments/types";
 import FreeFireQRCode from "./FreeFireQRCode";
 import FreeFireTrophyBadge from "./FreeFireTrophyBadge";

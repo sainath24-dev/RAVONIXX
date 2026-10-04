@@ -1,24 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import {
   Trophy,
-  Users,
-  Shield,
   ArrowRight,
   ArrowLeft,
   CheckCircle,
   AlertCircle,
   Loader2,
-  Gamepad2,
-  Phone,
-  Mail,
-  User,
-  Hash,
-  Sparkles,
   Copy,
   Check,
   QrCode,
@@ -29,7 +20,6 @@ import FreeFireQRCode from "@/components/tournaments/FreeFireQRCode";
 
 export default function TournamentRegisterPage() {
   const params = useParams();
-  const router = useRouter();
   const slug = params.slug as string;
 
   const [tournament, setTournament] = useState<TournamentWithMeta | null>(null);

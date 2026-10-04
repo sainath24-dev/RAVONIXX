@@ -87,6 +87,7 @@ export default function TournamentRegistrationsPage() {
 
   useEffect(() => {
     if (id) fetchRegistrations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, search, statusFilter, sortBy, sortDir, pagination.currentPage]);
 
   const handleStatusChange = async (regId: string, newStatus: string) => {
