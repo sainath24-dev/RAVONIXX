@@ -7,34 +7,34 @@ import { Play, Search, Film } from "lucide-react";
 
 const DEFAULT_VIDEOS = [
   {
-    id: "F07S9rY1-oU",
-    title: "FFWS SEA Spring | Grand Finals Champion Stage",
-    channel: "Free Fire Esports Official",
-    thumbnail: "https://img.youtube.com/vi/F07S9rY1-oU/hqdefault.jpg"
+    id: "jDqfZPITg0U",
+    title: "BR Mode Grand Finals | FFWS Global Finals – Jakarta",
+    channel: "Free Fire MAX Esports India Official",
+    thumbnail: "https://i.ytimg.com/vi/jDqfZPITg0U/hqdefault.jpg"
   },
   {
-    id: "b4l-V4p5_pE",
-    title: "FFWS SEA Spring | Knockout Stage - Week 4 Day 3",
+    id: "z4ZIm8POm4w",
+    title: "[EN] BR Mode Grand Finals | FFWS Global Finals – Jakarta",
     channel: "Free Fire Esports Official",
-    thumbnail: "https://img.youtube.com/vi/b4l-V4p5_pE/hqdefault.jpg"
+    thumbnail: "https://i.ytimg.com/vi/z4ZIm8POm4w/hqdefault.jpg"
   },
   {
-    id: "kYJ_L2kH0a4",
-    title: "FFWS SEA Fall | Knockout Stage - Week 1 Day 1",
+    id: "uBguQhflXOM",
+    title: "[EN] FFWS SEA 2026 FALL | Grand Finals",
     channel: "Free Fire Esports Official",
-    thumbnail: "https://img.youtube.com/vi/kYJ_L2kH0a4/hqdefault.jpg"
+    thumbnail: "https://i.ytimg.com/vi/uBguQhflXOM/hqdefault.jpg"
   },
   {
-    id: "Qf2l5xJ_s0w",
-    title: "Full Recap | FFWS Global Finals Tournament Highlights",
-    channel: "Free Fire Official",
-    thumbnail: "https://img.youtube.com/vi/Qf2l5xJ_s0w/hqdefault.jpg"
+    id: "bmANS6g_EzQ",
+    title: "FFWS SEA 2026 Spring | Grand Finals",
+    channel: "Free Fire Esports Official",
+    thumbnail: "https://i.ytimg.com/vi/bmANS6g_EzQ/hqdefault.jpg"
   },
   {
-    id: "9oM23_vH3_k",
-    title: "FFWS SEA Spring | Knockout Stage - Week 1 Day 1",
-    channel: "Free Fire Esports Official",
-    thumbnail: "https://img.youtube.com/vi/9oM23_vH3_k/hqdefault.jpg"
+    id: "jk0y2Ft13Ig",
+    title: "[HINDI] Esports World Cup 2025 | Grand Final",
+    channel: "Free Fire MAX Esports India Official",
+    thumbnail: "https://i.ytimg.com/vi/jk0y2Ft13Ig/hqdefault.jpg"
   }
 ];
 

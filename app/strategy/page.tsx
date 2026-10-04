@@ -197,11 +197,32 @@ export default function StrategyPage() {
   const markers = currentBoard.markers;
   const history = currentBoard.history;
 
-  // Active display image
-  const activeDisplaySrc = activeLocation && activeLocation.droneViews[selectedViewIndex]
+  // Active display image computation & state
+  const defaultDisplaySrc = activeLocation && activeLocation.droneViews[selectedViewIndex]
     ? activeLocation.droneViews[selectedViewIndex]
     : activeMap.src;
   const isDroneView = Boolean(activeLocation && activeLocation.droneViews[selectedViewIndex]);
+  const remoteFallbackSrc = activeLocation?.remoteUrls?.[selectedViewIndex] || activeMap.remoteMapUrl;
+
+  const [activeDisplaySrc, setActiveDisplaySrc] = useState<string>(defaultDisplaySrc);
+  const [isMapImageLoading, setIsMapImageLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    setActiveDisplaySrc(defaultDisplaySrc);
+    setIsMapImageLoading(true);
+  }, [defaultDisplaySrc]);
+
+  // Preload adjacent drone views into browser cache
+  useEffect(() => {
+    if (typeof window === "undefined" || !activeLocation) return;
+    const views = activeLocation.droneViews || [];
+    [selectedViewIndex - 1, selectedViewIndex + 1].forEach((idx) => {
+      if (idx >= 0 && idx < views.length && views[idx]) {
+        const preloadImg = new window.Image();
+        preloadImg.src = views[idx];
+      }
+    });
+  }, [activeLocation, selectedViewIndex]);
 
   // Load saved session on mount & register anti-tamper console banner
   useEffect(() => {
@@ -215,13 +236,6 @@ export default function StrategyPage() {
       const storedBoards = localStorage.getItem("rvx_board_drawings");
       if (storedBoards) setBoardStore(JSON.parse(storedBoards));
 
-      if (typeof window !== "undefined") {
-        console.log(
-          "%c🛡️ RAVONIXX SECURE TACTICAL ENGINE\n%cAll 3D aerial drone views and tactical map assets are proprietary and protected under RAVONIXX copyright. Unauthorized scraping, extraction, or redistribution is strictly monitored and prohibited.",
-          "color: #00F0FF; font-size: 14px; font-weight: bold; font-family: monospace;",
-          "color: #A1A1AA; font-size: 11px; font-family: monospace;"
-        );
-      }
     } catch {
       // ignore
     }
@@ -1632,11 +1646,31 @@ export default function StrategyPage() {
                   priority
                   draggable={false}
                   onDragStart={(e) => e.preventDefault()}
-                  className="object-cover opacity-95 select-none pointer-events-none"
+                  onLoad={() => setIsMapImageLoading(false)}
+                  onError={() => {
+                    if (remoteFallbackSrc && activeDisplaySrc !== remoteFallbackSrc) {
+                      setActiveDisplaySrc(remoteFallbackSrc);
+                    } else {
+                      setIsMapImageLoading(false);
+                    }
+                  }}
+                  className="object-cover opacity-95 select-none pointer-events-none transition-opacity duration-200"
                   sizes="(max-width: 1024px) 100vw, 950px"
                   unoptimized
                 />
               </div>
+
+              {/* Tactical Satellite Recon Loading Overlay */}
+              {isMapImageLoading && (
+                <div className="absolute inset-0 z-20 pointer-events-none flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px] transition-all">
+                  <div className="flex items-center gap-3 px-4 py-2 bg-panel/90 border border-primary/50 rounded shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+                    <RefreshCw className="w-4 h-4 text-primary animate-spin" />
+                    <span className="font-mono text-xs text-primary font-bold tracking-widest uppercase">
+                      SYNCHRONIZING RECON FEED...
+                    </span>
+                  </div>
+                </div>
+              )}
 
               {/* Grid Lines Overlay */}
               {showCoordinateGrid && (

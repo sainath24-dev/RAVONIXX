@@ -102,7 +102,7 @@ function ManagementCard({ member, index }: { member: ManagementMember; index: nu
       custom={index}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: true, margin: "150px" }}
       variants={fadeUp}
       style={{
         rotateX: rx,
@@ -128,7 +128,7 @@ function ManagementCard({ member, index }: { member: ManagementMember; index: nu
       {/* Default Overlay Header (Role Pill, Top Left) */}
       <div className="absolute top-2.5 left-2.5 z-10">
         <span className="display-font text-[10px] tracking-wider text-text-primary bg-panel-raised border border-hairline px-2 py-0.5 rounded-[2px] uppercase">
-          OPERATIONS
+          LEADERSHIP
         </span>
       </div>
 
@@ -296,7 +296,7 @@ export default function AboutPage() {
         <div className="text-center mb-16 select-none flex flex-col items-center">
           {/* Slanted header */}
           <h2 className="display-font font-black italic tracking-wide text-2xl sm:text-4xl text-text-primary uppercase slanted flex items-center gap-1">
-            <span className="text-primary font-bold">/</span>COMMAND DIRECTORS
+            <span className="text-primary font-bold">/</span>ORGANIZATION LEADERSHIP
           </h2>
         </div>
 

@@ -276,7 +276,7 @@ export default function Testimonials() {
               custom={idx}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, margin: "-80px" }}
+              viewport={{ once: true, margin: "150px" }}
               variants={fadeUp}
               className="break-inside-avoid border border-hairline bg-panel p-6 flex flex-col clip-card transition-colors duration-200 hover:bg-panel-raised"
             >
@@ -327,7 +327,7 @@ export default function Testimonials() {
             NO REVIEWS POSTED YET
           </p>
           <p className="font-body text-xs text-text-muted max-w-md">
-            Be the first operator, scrim partner, or community member to tell us how you feel about RAVONIXX above!
+            Be the first player, scrim partner, or community member to tell us how you feel about RAVONIXX above!
           </p>
         </div>
       )}

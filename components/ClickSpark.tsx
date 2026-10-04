@@ -43,29 +43,7 @@ export default function ClickSpark({
     window.addEventListener("resize", resize);
 
     const colors = [sparkColor, "#C084FC", "#00F0FF", "#FFFFFF"];
-
-    const handleClick = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      for (let i = 0; i < sparkCount; i++) {
-        const angle = (Math.PI * 2 * i) / sparkCount + (Math.random() - 0.5) * 0.5;
-        const speed = Math.random() * 2.5 + 1.5;
-        sparksRef.current.push({
-          x,
-          y,
-          angle,
-          speed,
-          size: Math.random() * sparkSize + 2,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          alpha: 1,
-          decay: 1 / (sparkDuration / 16),
-        });
-      }
-    };
-
-    window.addEventListener("click", handleClick);
+    let isRunning = false;
 
     const render = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -93,10 +71,41 @@ export default function ClickSpark({
         ctx.restore();
       }
 
-      animationFrameId = requestAnimationFrame(render);
+      if (sparksRef.current.length > 0) {
+        animationFrameId = requestAnimationFrame(render);
+      } else {
+        isRunning = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
     };
 
-    render();
+    const handleClick = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      for (let i = 0; i < sparkCount; i++) {
+        const angle = (Math.PI * 2 * i) / sparkCount + (Math.random() - 0.5) * 0.5;
+        const speed = Math.random() * 2.5 + 1.5;
+        sparksRef.current.push({
+          x,
+          y,
+          angle,
+          speed,
+          size: Math.random() * sparkSize + 2,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1,
+          decay: 1 / (sparkDuration / 16),
+        });
+      }
+
+      if (!isRunning) {
+        isRunning = true;
+        animationFrameId = requestAnimationFrame(render);
+      }
+    };
+
+    window.addEventListener("click", handleClick);
 
     return () => {
       window.removeEventListener("resize", resize);

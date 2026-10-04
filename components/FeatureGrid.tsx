@@ -5,6 +5,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { fadeUp } from "@/lib/motion";
 
+import { Crosshair, BookOpen, Users, ShoppingBag, Trophy, Sparkles } from "lucide-react";
+
 interface FeatureItem {
   title: string;
   description: string;
@@ -20,76 +22,42 @@ export default function FeatureGrid() {
       description: "Compete in custom rooms, register for high-stakes paid scrims, and test your team against elite squads.",
       linkText: "JOIN SCRIMS",
       linkPath: "/contact",
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-8 h-8 text-primary">
-          <circle cx="12" cy="12" r="9" />
-          <circle cx="12" cy="12" r="3" />
-          <line x1="12" y1="1" x2="12" y2="23" />
-          <line x1="1" y1="12" x2="23" y2="12" />
-        </svg>
-      ),
+      icon: <Crosshair className="w-8 h-8 text-primary" />,
     },
     {
       title: "Proper Coaching",
       description: "Access 1-on-1 gameplay sessions, VOD review libraries, and personalized strategies from pro coaches.",
       linkText: "APPLY FOR COACHING",
       linkPath: "/contact",
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-8 h-8 text-primary">
-          <rect x="4" y="4" width="16" height="16" rx="2" />
-          <line x1="9" y1="9" x2="15" y2="9" />
-          <line x1="9" y1="13" x2="15" y2="13" />
-          <line x1="9" y1="17" x2="13" y2="17" />
-        </svg>
-      ),
+      icon: <BookOpen className="w-8 h-8 text-primary" />,
     },
     {
       title: "Proper Team Alignment",
-      description: "Align with our active roster of top-tier professional esports operators and climb the ranking tables.",
+      description: "Align with our active roster of top-tier professional esports players and climb the ranking tables.",
       linkText: "MEET OUR ROSTER",
       linkPath: "/team",
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-8 h-8 text-primary">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          <path d="M12 8v8M8 12h8" />
-        </svg>
-      ),
+      icon: <Users className="w-8 h-8 text-primary" />,
     },
     {
       title: "Jersey & Merch Drops",
       description: "Get direct access to custom team apparel, limited-edition jersey drops, and exclusive club gear.",
       linkText: "BROWSE SHOP",
       linkPath: "/contact",
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-8 h-8 text-primary">
-          <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.62 2v6.23a2 2 0 001 1.73L6 15v7h12v-7l3-1.58a2 2 0 001-1.73V5.46a2 2 0 00-1.62-2z" />
-        </svg>
-      ),
+      icon: <ShoppingBag className="w-8 h-8 text-primary" />,
     },
     {
       title: "Invited Roster Slots",
       description: "Secure exclusive direct invitations to major community tournaments and verified custom league lobbies.",
       linkText: "CLAIM A SLOT",
       linkPath: "/contact",
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-8 h-8 text-primary">
-          <rect x="2" y="5" width="20" height="14" rx="2" />
-          <path d="M6 5v14M18 5v14" />
-          <circle cx="12" cy="12" r="2.5" />
-        </svg>
-      ),
+      icon: <Trophy className="w-8 h-8 text-primary" />,
     },
     {
       title: "And Many More Things",
       description: "Unlock custom game presets, direct scrimmage codes, visual design overlays, and community events.",
       linkText: "EXPLORE BENEFITS",
       linkPath: "/about",
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-8 h-8 text-primary">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M12 8v8M8 12h8" />
-        </svg>
-      ),
+      icon: <Sparkles className="w-8 h-8 text-primary" />,
     },
   ];
 
@@ -101,7 +69,7 @@ export default function FeatureGrid() {
           custom={idx}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: true, margin: "150px" }}
           variants={fadeUp}
           whileHover={{ y: -6, scale: 1.02 }}
           transition={{ duration: 0.25, ease: "easeOut" }}

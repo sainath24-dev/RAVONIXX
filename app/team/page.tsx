@@ -29,13 +29,30 @@ function BattleCardSkeleton() {
 export default function TeamPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [rosterPlayers, setRosterPlayers] = useState<Player[]>(players);
 
-  // Simulate network load to showcase premium skeletons
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 850);
-    return () => clearTimeout(timer);
+    let isMounted = true;
+    const loadPlayers = async () => {
+      try {
+        const res = await fetch("/api/players");
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted && Array.isArray(data) && data.length > 0) {
+            setRosterPlayers(data);
+          }
+        }
+      } catch {
+        // use fallback static players
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    loadPlayers();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -83,7 +100,7 @@ export default function TeamPage() {
               ))
           ) : (
             // Real cards - render all operators directly
-            players.map((player, idx) => (
+            rosterPlayers.map((player, idx) => (
               <motion.div
                 key={player.id}
                 layout

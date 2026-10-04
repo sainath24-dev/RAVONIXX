@@ -1,33 +1,33 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useScroll, useTransform, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
   const [isNavHovered, setIsNavHovered] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  
-  const { scrollY } = useScroll();
-  const backgroundColor = useTransform(
-    scrollY,
-    [0, 80],
-    ["rgba(12, 15, 18, 0.4)", "rgba(12, 15, 18, 0.75)"]
-  );
-  const borderOpacity = useTransform(scrollY, [0, 80], [0, 1]);
-  const borderColor = useTransform(
-    borderOpacity,
-    (o) => `rgba(255, 255, 255, ${o * 0.08})`
-  );
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 30;
+      setScrolled((prev) => (prev !== isScrolled ? isScrolled : prev));
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const links = [
     { name: "Home", path: "/" },
     { name: "Roster", path: "/team" },
     { name: "Tactics", path: "/strategy" },
+    { name: "Tournaments", path: "/tournaments" },
     { name: "Esports", path: "/esports" },
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
@@ -35,11 +35,14 @@ export default function Nav() {
 
   return (
     <>
-      <motion.nav
-        style={{ backgroundColor, borderColor }}
+      <nav
         onMouseEnter={() => setIsNavHovered(true)}
         onMouseLeave={() => setIsNavHovered(false)}
-        className="fixed top-0 left-0 w-full z-50 border-b border-hairline transition-colors duration-200 backdrop-blur-md overflow-hidden"
+        className={`fixed top-0 left-0 w-full z-50 border-b transition-colors duration-200 backdrop-blur-md overflow-hidden ${
+          scrolled
+            ? "bg-[#0C0F12]/85 border-white/10 shadow-lg"
+            : "bg-[#0C0F12]/50 border-white/5"
+        }`}
       >
         {/* Subtle Low-Opacity Background Texture Asset */}
         <div className="absolute inset-0 pointer-events-none opacity-10 mix-blend-screen -z-10">
@@ -47,6 +50,7 @@ export default function Nav() {
             src="/design_assets/navbar_rotated.jpeg"
             alt="Nav texture"
             fill
+            priority
             sizes="100vw"
             className="object-cover object-center"
           />
@@ -124,10 +128,8 @@ export default function Nav() {
                   >
                     {link.name}
                     {isActive && (
-                      <motion.div
-                        layoutId="nav-underline"
-                        className="absolute bottom-0 left-0 w-full h-[3px] bg-primary shadow-[0_0_12px_rgba(168,85,247,0.8)]"
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      <div
+                        className="absolute bottom-0 left-0 w-full h-[3px] bg-primary shadow-[0_0_12px_rgba(168,85,247,0.8)] animate-in fade-in duration-150"
                       />
                     )}
                   </Link>
@@ -188,7 +190,7 @@ export default function Nav() {
             })}
           </div>
         </motion.div>
-      </motion.nav>
+      </nav>
     </>
   );
 }

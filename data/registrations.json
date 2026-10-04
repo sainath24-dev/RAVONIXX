@@ -1,0 +1,209 @@
+[
+  {
+    "tournamentId": "trn_ravonixx_s1_freefire",
+    "teamName": "RAVONIXX ELITE",
+    "captain": {
+      "name": "Aarav Sharma",
+      "ign": "RVX_AARAV",
+      "uid": "189283741"
+    },
+    "players": [
+      {
+        "name": "Rohan Patel",
+        "uid": "283749102"
+      },
+      {
+        "name": "Vikas Singh",
+        "uid": "384910293"
+      },
+      {
+        "name": "Kabir Khan",
+        "uid": "492019384"
+      }
+    ],
+    "substitute": {
+      "name": "Deepak Verma",
+      "uid": "502910384"
+    },
+    "contact": {
+      "phone": "+91 9876543210",
+      "email": "aarav@ravonixx.xyz"
+    },
+    "status": "Approved",
+    "clientIp": "::1",
+    "id": "reg_1bf8ad8b-0",
+    "registrationNumber": 1,
+    "createdAt": "2026-10-04T03:26:14.912Z",
+    "adminRank": "#1"
+  },
+  {
+    "tournamentId": "trn_ravonixx_s1_freefire",
+    "teamName": "rvx esp",
+    "captain": {
+      "name": "SAINATH AIML",
+      "ign": "sai8",
+      "uid": "456789432"
+    },
+    "players": [
+      {
+        "name": "jolly",
+        "uid": "76543213"
+      },
+      {
+        "name": "king",
+        "uid": "34657687983"
+      },
+      {
+        "name": "lrtyh",
+        "uid": "35465767"
+      }
+    ],
+    "contact": {
+      "phone": "6361040802",
+      "email": "sainath.23aiml@cambridge.edu.in"
+    },
+    "status": "Approved",
+    "clientIp": "::1",
+    "id": "reg_9ac194e7-f",
+    "registrationNumber": 2,
+    "createdAt": "2026-10-04T03:53:22.661Z",
+    "adminRank": "#2"
+  },
+  {
+    "tournamentId": "trn_9e672ace",
+    "teamName": "CYBER WOLVES",
+    "captain": {
+      "name": "Rohan Das",
+      "ign": "WOLF_LEADER",
+      "uid": "8877665544"
+    },
+    "players": [
+      {
+        "name": "Karan Mehra",
+        "uid": "8877665545"
+      },
+      {
+        "name": "Vikas Roy",
+        "uid": "8877665546"
+      },
+      {
+        "name": "Sahil Verma",
+        "uid": "8877665547"
+      }
+    ],
+    "contact": {
+      "phone": "+91 9988776655",
+      "email": "cyberwolves@example.com"
+    },
+    "status": "Approved",
+    "clientIp": "::ffff:127.0.0.1",
+    "id": "reg_2f61cbe1-0",
+    "registrationNumber": 1,
+    "createdAt": "2026-10-04T05:44:37.911Z"
+  },
+  {
+    "tournamentId": "trn_ravonixx_s1_freefire",
+    "teamName": "total gamiong",
+    "captain": {
+      "name": "yutyre",
+      "ign": "hugyftdrsew",
+      "uid": "234566787"
+    },
+    "players": [
+      {
+        "name": "ytrdfs",
+        "uid": "98765434567"
+      },
+      {
+        "name": "qwertyu",
+        "uid": "9876543987654"
+      },
+      {
+        "name": "qwer",
+        "uid": "123456123456"
+      }
+    ],
+    "contact": {
+      "phone": "987654328765",
+      "email": "sainath.23aiml@cambridge.edu.in"
+    },
+    "status": "Approved",
+    "clientIp": "::1",
+    "id": "reg_c4b14a27-a",
+    "registrationNumber": 3,
+    "createdAt": "2026-10-04T06:16:33.727Z",
+    "adminRank": "#3"
+  },
+  {
+    "tournamentId": "trn_9e672ace",
+    "teamName": "kgg",
+    "captain": {
+      "name": "uytrsghljh",
+      "ign": "jlikugjfhgdfzsdgh",
+      "uid": "9876543456"
+    },
+    "players": [
+      {
+        "name": "SAINATH AIML",
+        "uid": "987654345678"
+      },
+      {
+        "name": "trdefgfcxcfgfc",
+        "uid": "87654"
+      },
+      {
+        "name": "iuytrde",
+        "uid": "8765434567"
+      }
+    ],
+    "substitute": {
+      "name": "hsDsfgdfsfg",
+      "uid": "987654567"
+    },
+    "contact": {
+      "phone": "7654567456",
+      "email": "sainath.23aiml@cambridge.edu.in"
+    },
+    "status": "Approved",
+    "clientIp": "::1",
+    "id": "reg_8b45f788-d",
+    "registrationNumber": 2,
+    "createdAt": "2026-10-04T06:24:49.476Z"
+  },
+  {
+    "tournamentId": "trn_9e672ace",
+    "teamName": "tg",
+    "captain": {
+      "name": "sai",
+      "ign": "sianath",
+      "uid": "4567875282"
+    },
+    "players": [
+      {
+        "name": "khan",
+        "uid": "76543124354"
+      },
+      {
+        "name": "satya",
+        "uid": "653423123435465"
+      },
+      {
+        "name": "jeery",
+        "uid": "65342435342"
+      },
+      {
+        "name": "legend",
+        "uid": "54324354554432"
+      }
+    ],
+    "contact": {
+      "phone": "6361040802",
+      "email": "sainath.23aiml@cambridge.edu.in"
+    },
+    "status": "Approved",
+    "clientIp": "::1",
+    "id": "reg_56955e09-8",
+    "registrationNumber": 3,
+    "createdAt": "2026-10-04T06:38:40.296Z"
+  }
+]

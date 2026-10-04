@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
 
     // 4. Construct Safe Embed Payload
     const payload = {
-      username: "RAVONIXX Operator Dispatch",
+      username: "RAVONIXX Player Dispatch",
       embeds: [
         {
           title: "🎯 New Player / Scrim Dossier Registration",

@@ -88,11 +88,14 @@ h1, h2, h3, h4, h5, h6, .display-font {
   clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
 }
 
-/* Custom CSS noise and scanline overlays */
+/* Custom CSS noise and scanline overlays - GPU Composited & Hardware Accelerated */
 .noise-overlay {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAMAAAA5ztcXZAAAAFkEXHRkQ3JlYXRpb24gVGltZQAyNy8wNi8xOJK7d3IAAAALVExURQAAAAAAAO7u7rKysvLy8t3d3fb29vT09P7+/v39/fPz8/Hx8e/v7+3t7erq6unp6efn5+Xl5ePj4+Hh4eHj49oV1jAAAAAnRSTlMAAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnJyooKywt7gH1AAAAn0lEQVRIx43PuxHAMAwDQUXuv8/24V3BBSwMvGkQ1Lh4V2V954/3H3x7c+/tZ1X2Zz/vP/h2XfXtfN5/8O1lVfY3e59lVfax1/XtfFZlVfZnP+8/+HZd9Z1/q7KPVdmffV5WZR/rvKzKPtZ5WZV9rPOyKvtY52VV9rHOy6rsY52XVdnHOi+rso91XlZlH+u8rMo+1nlZlX2s87Iq+1jnZV/rL+9yAQ0P0s2jAAAAAElFTkSuQmCC");
   opacity: 0.035;
   pointer-events: none;
+  contain: strict;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .scanlines-overlay {
@@ -104,6 +107,14 @@ h1, h2, h3, h4, h5, h6, .display-font {
     transparent 4px
   );
   pointer-events: none;
+  contain: strict;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Native Smooth Scrolling for Section Switching & Links */
+html {
+  scroll-behavior: smooth;
 }
 
 /* CSS Marquee */
@@ -120,23 +131,6 @@ h1, h2, h3, h4, h5, h6, .display-font {
   100% {
     transform: translateX(-50%);
   }
-}
-
-/* Lenis Custom Smooth Scroll */
-html.lenis {
-  height: auto;
-}
-.lenis.lenis-smooth {
-  scroll-behavior: auto;
-}
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overflow: clip;
-}
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-.lenis.lenis-scrolling iframe {
-  pointer-events: none;
 }
 
 /* Custom Purple Neon Scrollbars */

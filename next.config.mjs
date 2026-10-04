@@ -42,7 +42,7 @@ const securityHeaders = [
       "default-src 'self';",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com;",
       "style-src 'self' 'unsafe-inline';",
-      "img-src 'self' data: blob: https://img.youtube.com https://i.ytimg.com https://static.wikia.nocookie.net;",
+      "img-src 'self' data: blob: https://img.youtube.com https://i.ytimg.com https://static.wikia.nocookie.net https://api.qrserver.com https://ranaesp.online https:;",
       "font-src 'self' data:;",
       "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com;",
       "connect-src 'self' https://discord.com https://www.googleapis.com;",
@@ -64,6 +64,7 @@ const nextConfig = {
     ];
   },
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",

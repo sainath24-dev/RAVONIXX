@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Shield } from "lucide-react";
+import PortalLoginModal from "@/components/PortalLoginModal";
 
 const Youtube = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -78,6 +79,7 @@ function MagneticSocialIcon({ children, href }: { children: React.ReactNode; hre
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
 
   return (
     <footer className="border-t border-hairline bg-panel py-12 relative overflow-hidden">
@@ -117,12 +119,15 @@ export default function Footer() {
           </div>
 
           {/* Navigation Links */}
-          <div className="flex flex-wrap justify-center gap-x-8 gap-y-4">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
             <Link href="/" className="font-display text-sm text-text-muted hover:text-text-primary tracking-widest transition-colors">
               HOME
             </Link>
             <Link href="/team" className="font-display text-sm text-text-muted hover:text-text-primary tracking-widest transition-colors">
               ROSTER
+            </Link>
+            <Link href="/tournaments" className="font-display text-sm text-text-muted hover:text-text-primary tracking-widest transition-colors">
+              TOURNAMENTS
             </Link>
             <Link href="/about" className="font-display text-sm text-text-muted hover:text-text-primary tracking-widest transition-colors">
               ABOUT
@@ -130,6 +135,14 @@ export default function Footer() {
             <Link href="/contact" className="font-display text-sm text-text-muted hover:text-text-primary tracking-widest transition-colors">
               CONTACT
             </Link>
+            <button
+              type="button"
+              onClick={() => setLoginModalOpen(true)}
+              className="font-display text-sm text-primary hover:text-white tracking-widest transition-colors flex items-center gap-1.5 px-3 py-1 rounded bg-primary/10 border border-primary/30 hover:bg-primary/20 shadow-[0_0_10px_rgba(168,85,247,0.2)]"
+            >
+              <Shield className="w-3.5 h-3.5" />
+              LOGIN
+            </button>
           </div>
 
           {/* Magnetic Social Icons */}
@@ -227,7 +240,15 @@ export default function Footer() {
           <div>
             &copy; {currentYear} RAVONIXX. All rights reserved.
           </div>
-          <div className="flex space-x-6">
+          <div className="flex items-center space-x-6">
+            <button
+              type="button"
+              onClick={() => setLoginModalOpen(true)}
+              className="text-primary hover:text-white transition-colors flex items-center gap-1 font-mono text-[11px] uppercase tracking-wider"
+            >
+              <Shield className="w-3 h-3" />
+              PORTAL LOGIN
+            </button>
             <Link href="/policy" className="hover:text-text-muted transition-colors">
               PRIVACY POLICY
             </Link>
@@ -237,6 +258,12 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
+      {/* Global Interactive Portal Login Modal */}
+      <PortalLoginModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+      />
     </footer>
   );
 }

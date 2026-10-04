@@ -64,7 +64,7 @@ export default function LandingStepper() {
             custom={idx}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
+            viewport={{ once: true, margin: "150px" }}
             variants={fadeUp}
             className="flex flex-col items-center text-center group"
           >

@@ -117,7 +117,7 @@ export default function Home() {
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: true, margin: "150px" }}
           variants={clipReveal}
           className="relative p-[1px] bg-gradient-to-r from-primary to-primary-hi clip-card shadow-[0_0_30px_rgba(168,85,247,0.25)]"
         >

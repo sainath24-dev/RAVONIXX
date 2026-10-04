@@ -99,7 +99,7 @@ export default function ContactPage() {
   };
 
   const stepsList = [
-    { num: 1, label: "OPERATOR INFO", icon: User },
+    { num: 1, label: "PLAYER INFO", icon: User },
     { num: 2, label: "REGION & TIER", icon: Globe },
     { num: 3, label: "TERMS & CONFIRM", icon: FileText },
   ];
@@ -110,7 +110,7 @@ export default function ContactPage() {
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: true, margin: "150px" }}
         variants={fadeUp}
         className="grid grid-cols-1 lg:grid-cols-12 gap-10 w-full"
       >
@@ -185,7 +185,7 @@ export default function ContactPage() {
                     className="flex flex-col gap-5"
                   >
                     <div className="flex items-center gap-2 text-xs font-display text-primary tracking-wider uppercase font-bold">
-                      <span>STEP 01 // OPERATOR CREDENTIALS</span>
+                      <span>STEP 01 // PLAYER DETAILS</span>
                     </div>
 
                     <div>

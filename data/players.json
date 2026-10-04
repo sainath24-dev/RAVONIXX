@@ -1,0 +1,260 @@
+[
+  {
+    "id": "sainath",
+    "ign": "SAINATH",
+    "realName": "Sainath",
+    "role": "IGL / SUPPORTER",
+    "location": "Bangalore",
+    "uid": "561691696",
+    "photoUrl": "/character/xayne.jpeg",
+    "hudLayoutImageUrl": "/images/players/sainath_hud.jpeg",
+    "loadout": {
+      "skills": [
+        {
+          "name": "Xayne",
+          "type": "ACTIVE",
+          "desc": "Extreme Encounter (HP boost & shield dmg)",
+          "iconUrl": "/character/xayne.jpeg"
+        },
+        {
+          "name": "Olivia",
+          "type": "PASSIVE",
+          "desc": "Healing Touch (Heal diffusion)",
+          "iconUrl": "/character/oliva.jpeg"
+        },
+        {
+          "name": "Thiva",
+          "type": "PASSIVE",
+          "desc": "Vital Vibes (Fast rescue & HP restore)",
+          "iconUrl": "/character/thiva.jpeg"
+        },
+        {
+          "name": "Joseph",
+          "type": "PASSIVE",
+          "desc": "Nutty Movement (Speed boost when hit)",
+          "iconUrl": "/character/joseph.jpeg"
+        }
+      ],
+      "weapons": [
+        "AC80",
+        "MP5"
+      ],
+      "weaponSkinNote": "AC80 - Golden Silencer",
+      "pet": "Rocky (Stay Chill skill cooldown reduction)"
+    },
+    "settings": {
+      "generalSens": 200,
+      "redDotSens": 180,
+      "scope2xSens": 170,
+      "scope4xSens": 190,
+      "sniperScopeSens": 120,
+      "freeLookSens": 100,
+      "dpi": 480,
+      "controlLayout": "4-finger claw",
+      "hudCode": "#FFHUDT6O3jg0XLW9Po7eM",
+      "gyroscope": true
+    },
+    "device": "ROG Phone 8 Pro",
+    "achievements": [
+      "1st — Bangalore Elite Cup 2025",
+      "MVP — Ravonixx Invitational 2026"
+    ],
+    "socials": {
+      "youtube": "https://youtube.com",
+      "instagram": "https://instagram.com",
+      "discord": "sainath#5616"
+    }
+  },
+  {
+    "id": "legend",
+    "ign": "RVX-LEGEND07",
+    "realName": "Legend",
+    "role": "IGL / SNIPER",
+    "location": "Bangalore",
+    "uid": "2137301165",
+    "photoUrl": "/character/rafael.jpeg",
+    "hudLayoutImageUrl": "/images/players/legend_hud.jpeg",
+    "loadout": {
+      "skills": [
+        {
+          "name": "Morse",
+          "type": "ACTIVE",
+          "desc": "Stealth Bytes (Stealth & speed boost)",
+          "iconUrl": "/character/morse.jpeg"
+        },
+        {
+          "name": "Moco",
+          "type": "PASSIVE",
+          "desc": "Hacker's Eye (Tagged bullet tracing)",
+          "iconUrl": "/character/moco.jpeg"
+        },
+        {
+          "name": "Rafael",
+          "type": "PASSIVE",
+          "desc": "Dead Silent (Silenced sniper & fast bleedout)",
+          "iconUrl": "/character/rafael.jpeg"
+        },
+        {
+          "name": "Nikita",
+          "type": "PASSIVE",
+          "desc": "Firearms Expert (Fast reload & extra SMG damage)",
+          "iconUrl": "/character/nikita.jpeg"
+        }
+      ],
+      "weapons": [
+        "M82B",
+        "AWM"
+      ],
+      "weaponSkinNote": "M82B - Dragon Mobster",
+      "pet": "Falco (Skyline arrival & faster landing)"
+    },
+    "settings": {
+      "generalSens": 190,
+      "redDotSens": 160,
+      "scope2xSens": 155,
+      "scope4xSens": 165,
+      "sniperScopeSens": 185,
+      "freeLookSens": 110,
+      "dpi": 440,
+      "controlLayout": "4-finger claw",
+      "hudCode": "#FFHUD0917hklwL105K7qP",
+      "gyroscope": true
+    },
+    "device": "iPhone 15 Pro Max",
+    "achievements": [
+      "Top Sniper — FF India Open Season 4",
+      "Clutch King Award — EWC Qualifier"
+    ],
+    "socials": {
+      "youtube": "https://youtube.com",
+      "instagram": "https://instagram.com",
+      "discord": "legend07#2137"
+    }
+  },
+  {
+    "id": "satya",
+    "ign": "RVX-SATYA",
+    "realName": "Satya (Ayano)",
+    "role": "ENTRY FRAGGER",
+    "location": "Bangalore",
+    "uid": "1465958442",
+    "photoUrl": "/character/kassie.jpeg",
+    "hudLayoutImageUrl": "/images/players/satya:aayano_hud.jpeg",
+    "loadout": {
+      "skills": [
+        {
+          "name": "Kassie",
+          "type": "ACTIVE",
+          "desc": "Electro-Recovery (Targeted healing tether)",
+          "iconUrl": "/character/kassie.jpeg"
+        },
+        {
+          "name": "Chrono",
+          "type": "ACTIVE",
+          "desc": "Time Turner (Spherical impenetrable shield)",
+          "iconUrl": "/character/chrono.jpeg"
+        },
+        {
+          "name": "Kelly",
+          "type": "PASSIVE",
+          "desc": "Dash (Permanent movement boost)",
+          "iconUrl": "/character/kelly.jpeg"
+        },
+        {
+          "name": "Moco",
+          "type": "PASSIVE",
+          "desc": "Hacker's Eye (Target tracking)",
+          "iconUrl": "/character/moco.jpeg"
+        }
+      ],
+      "weapons": [
+        "Woodpecker",
+        "MAG-7"
+      ],
+      "weaponSkinNote": "Woodpecker - Majestic Beast",
+      "pet": "Dreki (Dragon Glare reveals medkitting enemies)"
+    },
+    "settings": {
+      "generalSens": 195,
+      "redDotSens": 190,
+      "scope2xSens": 180,
+      "scope4xSens": 175,
+      "sniperScopeSens": 110,
+      "freeLookSens": 120,
+      "dpi": 460,
+      "controlLayout": "4-finger claw",
+      "hudCode": "#FFHUD8712aNxY994Qz10C",
+      "gyroscope": true
+    },
+    "device": "OnePlus 12",
+    "achievements": [
+      "1st Place — South India Showdown 2025",
+      "Clutch Play of the Tournament — FFWS Qualifiers"
+    ],
+    "socials": {
+      "youtube": "https://youtube.com",
+      "instagram": "https://instagram.com",
+      "discord": "satya#1465"
+    }
+  },
+  {
+    "id": "arise",
+    "ign": "RVX-ARISE.04",
+    "realName": "AK(Arise)",
+    "role": "PRIMARY RUSHER / SECONDARY RUSHER",
+    "location": "India",
+    "uid": "2590977394",
+    "photoUrl": "/character/thiva.jpeg",
+    "loadout": {
+      "skills": [
+        {
+          "name": "Kassie",
+          "type": "ACTIVE",
+          "desc": "Electro-Recovery (Targeted healing tether)",
+          "iconUrl": "/character/kassie.jpeg"
+        },
+        {
+          "name": "Thiva",
+          "type": "PASSIVE",
+          "desc": "Vital Vibe (Rapid squad rescue & HP burst on revive)",
+          "iconUrl": "/character/thiva.jpeg"
+        },
+        {
+          "name": "Nikita",
+          "type": "PASSIVE",
+          "desc": "Firearms Expert (Fast reload & bonus final-bullet SMG damage)",
+          "iconUrl": "/character/nikita.jpeg"
+        }
+      ],
+      "weapons": [
+        "AC80",
+        "Woodpecker",
+        "M590"
+      ],
+      "weaponSkinNote": "AC80 & Woodpecker Tactical Setup",
+      "pet": "Beaston (Helping Hand throwable distance boost)"
+    },
+    "settings": {
+      "generalSens": 65,
+      "redDotSens": 85,
+      "scope2xSens": 65,
+      "scope4xSens": 85,
+      "sniperScopeSens": 50,
+      "freeLookSens": 70,
+      "dpi": 480,
+      "controlLayout": "4-finger claw",
+      "hudCode": "#FFHUDT6O3jrYCvC1Po7eP",
+      "gyroscope": true
+    },
+    "device": "iPhone / iPad Pro",
+    "achievements": [
+      "Founder & Core Rusher — Ravonixx Esports",
+      "TEC Student Ambassador & Tournament Director"
+    ],
+    "socials": {
+      "youtube": "https://youtube.com",
+      "instagram": "https://instagram.com",
+      "discord": "mayur_bhai"
+    }
+  }
+]
